@@ -1,0 +1,256 @@
+<html>
+<body>
+
+
+<style>
+.title {
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: large;
+	border-bottom:1px solid #bbbbbb;
+	margin-bottom:15px;
+}
+.title2 {
+	font-weight: bold;
+	padding-top: 15px;
+}
+
+.desc {
+	padding-left:10px;
+	margin-bottom:35px;
+}
+.desc2 {
+	padding-left:15px;
+}
+.codeparent {
+	margin:20px;
+	margin-top:5px;
+	margin-left:40px;
+}
+.codephp {
+	margin-bottom:2px;
+	width:600px;
+	font-size:x-small;
+	text-align:right;
+}
+.code {
+	margin: 0px;
+	padding: 6px;
+	border: 1px inset;
+	width: 600px;
+	height: 50px;
+	text-align: left;
+	overflow: auto;
+	background-color:#eeeeee;
+}
+.toc {
+	border:1px solid #bbbbbb;
+	background-color:#eeeeee;
+	padding:10px;
+	margin-bottom:35px;
+}
+</style>
+<h2 style="border-bottom:1px solid #cccccc;">AwoCoupon for Virtuemart - User Guide</h2>
+<div align="right">brought to you by <a href="http://awodev.com">http://awodev.com</a></div>
+<br>
+
+<div class="toc">
+<b>Table of Contents</b><br>
+1. <a href="#Introduction">Introduction</a><br/>
+2. <a href="#Installation">Installation</a><br/>
+&nbsp; &nbsp; &nbsp;2.1 <a href="#System-Requirements">System Requirements</a><br/>
+&nbsp; &nbsp; &nbsp;2.2 <a href="#Installation">Virtuemart Coupon</a><br/>
+3. <a href="#Administration">Using the Software - Administration</a><br/>
+&nbsp; &nbsp; &nbsp;3.1 <a href="#Getting-Around">Getting Around</a><br/>
+&nbsp; &nbsp; &nbsp;3.2 <a href="#Configuring-Coupon">Configuring a Coupon</a><br/>
+4. <a href="#Example-Usage">Example Usage</a><br/>
+&nbsp; &nbsp; &nbsp;4.1 <a href="#Example-1">Example 1</a><br/>
+&nbsp; &nbsp; &nbsp;4.2 <a href="#Example-2">Example 2</a><br/>
+&nbsp; &nbsp; &nbsp;4.3 <a href="#Example-3">Example 3</a><br/>
+&nbsp; &nbsp; &nbsp;4.4 <a href="#Example-4">Example 4</a><br/>
+5. <a href="#Troubleshooting">Troubleshooting</a><br/>
+</div>
+
+<div class="title" id="Introduction">Introduction</div> 
+<div class="desc">
+	AwoCoupon for Virtuemart was created to fill a void within Virtuemart. 
+	Although Virtuemart has coupon capabilities, they are not extensive enough
+	to cover what many people would call basic coupon features.  AwoCoupon for Virtuemart
+	fills this gap.  Here are a few of its features.
+	<ul><li>Product(s) specific discounts</li>
+		<li>Customer(s) specific discounts</li>
+		<li>The ability to only trigger coupons if a minimum cart total is reached</li>
+		<li>Ability to set expiration dates for coupons</li>
+		<li>Restrict the number of times a coupon can be used by any given user</li>
+		<li>Easy management of all coupons</li>
+		<li>Gift Certificate style coupons</li>
+	</ul>
+	
+<div class="title" id="Installation">Installation</div>
+<div class="desc">
+	Backup your code before starting this installation process.  
+	This is a 2 step process.  First the component is installed,
+	then the virtuemart source code is edited.  If the second part
+	of the installation is not completed for some reason then 
+	knowledge of php code as well as write access to your joomla
+	source code will be needed.  Please read through the instructions carefully.
+	<div class="title2" id="System-Requirements">System requirements</div>
+	<div class="desc2">Joomla 1.5 and up / Virtuemart 2 and up</div>
+	<div class="title2" id="Installation">Virtuemart Coupon</div>
+	<div class="desc2">
+		1. &nbsp; Download Virtuemart Couon to a location on your computer<br/>
+		2. &nbsp; Log into Joomla as an Administrator<br/>
+		3. &nbsp; From the top menu go to Extensions->"Install/Uninstall"<br/>
+		4. &nbsp; Under the “Upload Package File" section press the button "Browse…"<br/>
+		5. &nbsp; Find and select the file, com_vmcoupon.zip, downloaded to your computer<br/>
+		6. &nbsp; Install component by pressing "Upload File & Install" button<br/>
+		7. &nbsp; You will receive a page telling you the status of the installation.  
+	</div>	
+</div>
+
+
+
+
+<div class="title" id="Administration">Using the software - Administration</div>
+<div class="desc">
+	Now that we have finished the application, we can look closely at the features presented in this application.
+	<div class="title2" id="Getting-Around">Getting Around</div>
+	<div class="desc2">
+		Log into the administration screen and go to Components &raquo; AwoCoupon.  Here you will see the control
+		panel.  It shows the general statistics of what coupons you currently have configured as well as a couple
+		of menus.  From here you can enter a new coupon or view the entries of coupons you have.
+	</div>
+	<div class="title2" id="Configuring-Coupon">Configuring a Coupon</div>
+	<div class="desc2">
+		To add a new coupon, select "New Coupon" from the control panel, or from the coupons list "New".
+		<br/>Fields:
+		<div style="padding-left:15px;">
+			<b><i>Coupon Code</i></b> enter a unique coupon code of up to 32 characters
+			<br/><b><i>Published</i></b> Options
+						<br>&nbsp; &nbsp; Published: active coupon
+						<br>&nbsp; &nbsp; Unpublished: inactive coupon
+			<br/><b><i>Function Type</i></b> Options
+						<br>&nbsp; &nbsp; Coupon: used as a normal coupon.  If number of uses is set to 2, then all users can use the coupon a total of 2 times each.
+						<br>&nbsp; &nbsp; Gift Certificate: used as a gift certificate. <font color="red">*** available in the PRO version Only ***</font>
+			<br/><b><i>Number of uses</i></b>
+						<br>&nbsp; &nbsp; <u>Options</u>
+						<br>&nbsp; &nbsp; &nbsp; &nbsp; Total: treats the number of uses as a total across all users
+						<br>&nbsp; &nbsp; &nbsp; &nbsp; per Customer: treats the number of uses as per user
+						<br>&nbsp; &nbsp; <u>Number</u>: if both the dropdown and textfield are left blank, there is no limit.
+			<br/><b><i>Percent or Total</i></b> Options
+						<br>&nbsp; &nbsp; Percent: coupon takes a percent of value 
+						<br>&nbsp; &nbsp; Total: coupon is an actual figure that is subtracted from total 
+			<br/><b><i>Discount Type</i></b> Options
+				<br>This option can only be used if a product is selected AND the Percent or Total field is selected as a Percent.  Otherwise it defaults to "Overall".
+						<br>&nbsp; &nbsp; Overall: The discount is calculated as a percentage of the overall total in the shopping cart
+						<br>&nbsp; &nbsp; Specific: The discount is calculated as a percentage of the total of the products configured in the coupon that are in the shopping cart
+			<br/><b><i>Value</i></b> Number: this is the value of the coupon and is dependent on the Percent or Total field to determine how it is calculated
+			<br/><b><i>Minimum Value</i></b> Number: this is the minimum value of the shopping cart before this coupon can take effect.  If set to 0 or is left blank, then there is no minimum value
+			<br/><b><i>Expiration</i></b> Date: the date the coupon expires.  If left blank, then it never expires.
+			<br/><b><i>Customers</i></b> A multiple select box of all your Virtuemart customers.  Selection of customers will activate the coupon only for those customers.
+			<br/><b><i>Products</i></b> A multiple select box of all your Virtuemart products.  Selection of products will limit the activation of the coupon to those specific products.
+		</div>
+	</div>
+</div>
+<div class="title" id="Example-Usage">Example Usage</div>
+<div class="desc">
+The customer and product field are multiple selection boxes.  So you can select none, one, or multiple customers and/or products for every coupon configured.
+	<div class="title2" id="Example-1">Example 1</div>
+	<div class="desc2">
+		Coupon Code: COUPONCODE
+		<br/>Published: Published
+		<br/>Function Type: Coupon
+		<br/>Number of Uses: 1 per Customer
+		<br/>Percent or Total: Percent
+		<br/>Discount Type: Overall
+		<br/>Value: 25
+		<br/>Minimum Value: <i>blank</i>
+		<br/>Expiration: <i>blank</i>
+		<br/>Customer: <i>None chosen</i>
+		<br/>Products: <i>None chosen</i>
+		<br>This coupon will work for all products and all customers (including any new registrations) for exactly 1 time per customer.  It will take 25% off the total value of the shopping cart.  The coupon never expires.  The customer is required to have an account to be able to use this code.
+	</div>
+	<div class="title2" id="Example-2">Example 2</div>
+	<div class="desc2">
+		Coupon Code: COUPONCODE
+		<br/>Published: Published
+		<br/>Function Type: Coupon
+		<br/>Number of Uses: <i>blank</i>
+		<br/>Percent or Total: Value
+		<br/>Discount Type: Overall
+		<br/>Value: 25
+		<br/>Minimum Value: 100
+		<br/>Expiration: 2020-10-17
+		<br/>Customer: <i>2 chosen</i>
+		<br/>Products: <i>3 chosen</i>
+		<br>This coupon will work for the 2 customers chosen as long as their shopping cart total has a minimum total of 100 and at least one product in the cart is one of the 3 chosen in the coupon.  It is a permanent coupon so it will work everytime used as long as the criteria are met.  The coupon will become invalid on October 17, 2020.
+	</div>
+	<div class="title2" id="Example-3">Example 3</div>
+	<div class="desc2">
+		Coupon Code: COUPONCODE
+		<br/>Published: Published
+		<br/>Function Type: Coupon
+		<br/>Number of Uses: 3 per Customer
+		<br/>Percent or Total: Percent
+		<br/>Discount Type: Specific
+		<br/>Value: 20
+		<br/>Minimum Value: 120
+		<br/>Expiration: <i>blank</i>
+		<br/>Customer: <i>7 chosen</i>
+		<br/>Products: <i>3 chosen</i>
+		<br>This coupon will work for the 7 customers chosen as long as their shopping cart has a minimum total of 120 and at least one product in the cart is one of the 3 chosen in the coupon.  Since the discount type is set to specific, 20% will only be deducted from the value of the product set in the coupon.  If the customer has all 3 products, 20% will be deducted from all 3 products.  Each of the customers selected can use this coupon a total of 3 times.  Since it has no expiration date, it never expires, but with the restrictions set, it effectively expires after all 7 customers use the coupon on 3 seperate occasions each.
+	</div>
+	<div class="title2" id="Example-4">Example 4</div>
+	<div class="desc2">
+		Coupon Code: COUPONCODE
+		<br/>Published: Published
+		<br/>Function Type: Coupon
+		<br/>Number of Uses: 1 Total
+		<br/>Percent or Total: Total
+		<br/>Discount Type: Overall
+		<br/>Value: 5
+		<br/>Minimum Value: <i>blank</i>
+		<br/>Expiration: <i>blank</i>
+		<br/>Customer: <i>blank</i>
+		<br/>Products: <i>blank</i>
+		<br>This coupon will work exactly like a gift coupon.  Anybody can use it (an account is not required) and it will work for exactly 1 time.  Once used, it becomes invalid.
+	</div>
+</div>
+<div class="title" id="Troubleshooting">Troubleshooting</div>
+<div class="desc">Please contact the forum with specific question.</div>
+
+
+
+
+</body>
+</html>
+
+
+<!--
+<font color="#007700">if </font><font
+								color="#007700">(</font><font
+								color="#0000BB">file_exists</font><font
+								color="#007700">(</font><font
+								color="#0000BB">JPATH_ADMINISTRATOR</font><font
+								color="#007700">.</font><font
+								color="#0000BB">DS</font><font
+								color="#007700">.</font><font
+								color="#DD0000">"components"</font><font
+								color="#007700">.</font><font
+								color="#0000BB">DS</font><font
+								color="#007700">.</font><font
+								color="#DD0000">"com_awocoupon"</font><font
+								color="#007700">.</font><font
+								color="#0000BB">DS</font><font
+								color="#007700">.</font><font
+								color="#DD0000">"vmclasses"</font><font
+								color="#007700">.</font><font
+								color="#0000BB">DS</font><font
+								color="#007700">.</font><font
+								color="#DD0000">"ps_coupon_process.php"</font><font
+								color="#007700">)</font><font
+								color="#007700">)</font>
+				
+								<font color="#007700">{</font>
+-->
+

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" version="2.5" method="upgrade" group="vmpayment">
+	<name>VMPayment - AwoCoupon</name>
+	<creationDate>2014-03-26</creationDate>
+	<author>Seyi Awofadeju</author>
+	<copyright>Copyright (C) Seyi Awofadeju - All rights reserved.</copyright>
+	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
+	<authorEmail>dev@awofadeju.com</authorEmail>
+	<authorUrl>http://awodev.com</authorUrl>
+	<version>2.0.0</version>
+	<description>AwoCoupon for Virtuemart</description>
+	<files>
+		<filename plugin="awocoupon">awocoupon.php</filename>
+	</files>
+	<scriptfile>script.php</scriptfile>
+</extension>

@@ -1,0 +1,83 @@
+
+2.0.23
+- Fixed issue where coupon does not display initially if the user is logged in and enters a coupon in a different case than it was created in, for example, coupon code created is "coupon" but in front end entered as "Coupon"
+
+2.0.22
+- Fix PHP 7 warning -> Deprecated: Methods with the same name as their class will not be constructors in a future version of PHP
+
+2.0.21
+- Fix problem in 3.0.10 where, on update of cart, the coupon is not updated
+- Fix problem in 3.0.10 where entering an invalid coupon, after entering a valid coupon, still shows remnants of the valid coupon until a page refres
+
+2.0.20
+- Updated logic to work with Virtuemart 3.0.10 and up
+
+2.0.19
+- Updated logic to work with Virtuemart 3.0.9.4 and up
+
+2.0.18
+- Fixed database error for history table when anonymous users user coupon code, now all anonymous users are added under user_id of 0 and code usage is incremented for that user
+
+2.0.17
+- Fixed issue where select all checkbox would not select any checkboxes on the coupon list
+
+2.0.16
+- Fixed issue where saving a coupon caused a database error in some cases using Joomla 3.x/Virtuemart 3.x
+- Fixed issue where on update, Virtuemart coupons are recopied into AwoCoupon
+- Fixed an incompatibility issue between AwoCoupon and Virtuemart Bonus that causes the error: JPath::check Snooping out of bounds @ JPATH_COMPONENT/views
+
+2.0.15
+- Updated to work with Joomla 3 and Virtuemart 2.9.x +
+
+2.0.14
+- Updated the display of coupon code in front end so customer can delete coupon from cart, can use template override to change looks
+
+2.0.13
+- Updated number of uses logic, for Virtuemart 2.0.26, this fix is needed to get it to work with no holes:
+   https://awodev.com/forum/awocoupon/help-section/virtuemart-2026-coupon-usage-not-being-recorded
+
+2.0.12
+- Fixed bug where entering an invalid coupon code would cause the error message to be displayed on the remaining session page refreshes
+
+2.0.11
+- Updated to work with Virtuemart 2.0.26 SetCouponInUse function
+- updated to fix ajax population of Products/Categories where multiple languages are involved
+- Updated minimum coupon error to include the amount
+
+2.0.10
+- Added support for Russian language
+
+2.0.9
+- Added category
+- Updated error messages to display default Virtuemart error when order minimum has not been reached
+
+2.0.8
+- Updated interface so shops with many users or products do not get a memory timeout when trying to add a coupon code
+
+2.0.7
+- Fixed issue where coupon code may be cached and customer can use a restricted number of uses code more than the allowed times
+
+2.0.6
+- updated to work with Virtuemart 2.0.21 and up
+- Updated starttime/expiraiton check to use the timezone set within Joomla global configuration instead of server time
+- Fixed display of message "Discount Coupon successfully added" when adding a code that does not exist
+
+2.0.5
+- Fixed problem with queuing messages where message was supporessed when updating/deleting products in cart with valid coupon
+- Added the ability to set Discount Type to 'Specific' for value type amount coupon
+
+2.0.4
+- Fixed issue where using the copy coupon code api was not also copying the products
+
+2.0.3
+- Fixed JHTMLSlider compatibility with Joomla 1.5
+
+2.0.2
+- Added Dutch Translations
+- Fixed problem with using number of uses per customer
+- Fixed problem with selecting Amount Coupons
+- Fixed enqueueMessage error when saving a coupon with errors
+
+2.0.1
+- Updated to work with Virtuemart 2.0.0 stable
+- Security Updates
