@@ -11,7 +11,7 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.model');
 
-class AwoCouponModelUsers extends JModel {
+class AwoCouponModelProducts extends JModel {
 	var $_pagination = null;
 	var $_id = null;
 
@@ -29,9 +29,7 @@ class AwoCouponModelUsers extends JModel {
 		$this->setState('limit', $limit);
 		$this->setState('limitstart', $limitstart);
 
-		$array = JRequest::getVar('cid',  0, '', 'array');
-		//$this->setId((int)$array[0]);
-		$id		= $mainframe->getUserStateFromRequest( $option.'.users.id', 	'id', 	JRequest::getVar( 'id' ), 'cmd' );
+		$id		= $mainframe->getUserStateFromRequest( $option.'.products.id', 	'id', 	JRequest::getVar( 'id' ), 'cmd' );
 		$this->setId($id);
 
 	}
@@ -57,7 +55,7 @@ class AwoCouponModelUsers extends JModel {
 			$model_coupon = $controller->getModel('coupon');
 			$model_coupon->setId($this->_id);
 			$rows      	= & $model_coupon->getEntry();
-			$rows->users = $this->_getList($query, $this->getState('limitstart'), $this->getState('limit'));
+			$rows->products = $this->_getList($query, $this->getState('limitstart'), $this->getState('limit'));
 			$this->_data = $rows;
 
 		}
@@ -102,16 +100,13 @@ class AwoCouponModelUsers extends JModel {
 		$orderby	= $this->_buildContentOrderBy();
 
 		$sql = 'SELECT c.id,c.coupon_code,c.num_of_uses,c.coupon_value_type,c.coupon_value,
-					 c.min_value,c.discount_type,c.function_type,c.expiration,u.user_id,
-					 if(uv.user_id is NULL,us.name,uv.first_name) as first_name,uv.last_name
+					 c.min_value,c.discount_type,c.function_type,c.expiration,pv.product_id,pv.product_name,pv.product_sku
 				 FROM #__awocoupon c
-				 JOIN #__awocoupon_user u ON u.coupon_id=c.id
-				 JOIN #__users us ON us.id=u.user_id
-				 LEFT JOIN #__'.VM_TABLEPREFIX.'_user_info uv ON uv.user_id=u.user_id
+				 JOIN #__awocoupon_product p ON p.coupon_id=c.id
+				 JOIN #__'.VM_TABLEPREFIX.'_product pv ON pv.product_id=p.product_id
 				WHERE c.id='.$this->_id.'
-				GROUP BY u.user_id
 				'.$orderby
-			; 
+			;
 		return $sql;
 	}
 
@@ -121,8 +116,8 @@ class AwoCouponModelUsers extends JModel {
 	function _buildContentOrderBy() {
 		global $mainframe, $option;
 
-		$filter_order		= $mainframe->getUserStateFromRequest( $option.'.users.filter_order', 	'filter_order', 	'c.coupon_code', 'cmd' );
-		$filter_order_Dir	= $mainframe->getUserStateFromRequest( $option.'.users.filter_order_Dir',	'filter_order_Dir',	'', 'word' );
+		$filter_order		= $mainframe->getUserStateFromRequest( $option.'.products.filter_order', 	'filter_order', 	'pv.product_name', 'cmd' );
+		$filter_order_Dir	= $mainframe->getUserStateFromRequest( $option.'.products.filter_order_Dir',	'filter_order_Dir',	'', 'word' );
 
 		$orderby 	= ' ORDER BY '.$filter_order.' '.$filter_order_Dir;
 
@@ -130,12 +125,12 @@ class AwoCouponModelUsers extends JModel {
 	}
 
 	
-	function deleteusers($cids) {	
+	function deleteproducts($cids) {	
 		$total = count($cids);
 		$cids = implode( '\',\'', $cids );
 
-		$sql = 'DELETE FROM #__awocoupon_user'
-				. ' WHERE coupon_id='.(int)$this->_id.' AND user_id IN (\''. $cids .'\')';
+		$sql = 'DELETE FROM #__awocoupon_product'
+				. ' WHERE coupon_id='.(int)$this->_id.' AND product_id IN (\''. $cids .'\')';
 
 		$this->_db->setQuery( $sql );
 		if(!$this->_db->query()) {
@@ -143,7 +138,7 @@ class AwoCouponModelUsers extends JModel {
 			return false;
 		}
 
-		return $total.' '.JText::_('USERS DELETED');
+		return $total.' '.JText::_('PRODUCTS DELETED');
 	}
 	
 

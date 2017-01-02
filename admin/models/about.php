@@ -9,9 +9,16 @@
 // Disallow direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
-class AwoCouponModelAbout extends AwoCouponModel {
+jimport('joomla.application.component.model');
 
-	public function __construct() {
+class AwoCouponModelAbout extends JModel
+{
+	/**
+	 * Constructor
+	 **/
+	function __construct()
+	{
 		parent::__construct();
 	}
 }
+?>

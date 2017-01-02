@@ -9,63 +9,67 @@
 // Disallow direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
+jimport( 'joomla.application.component.view');
 
-class AwoCouponViewCoupons extends AwoCouponView {
+class AwoCouponViewCoupons extends JView {
 
 	function display($tpl = null) {
-		global $def_lists;
-
-		parent::display_beforeload();
-
+		global $mainframe, $option;
+		
 		//initialise variables
-		$db  		= JFactory::getDBO();
-		$document	= JFactory::getDocument();
+		$db  		= & JFactory::getDBO();
+		$document	= & JFactory::getDocument();
 		
 		JHTML::_('behavior.tooltip');
 		JHTML::_('behavior.modal');
 
 		//get vars
-		$filter_order		= JFactory::getApplication()->getUserStateFromRequest( AWOCOUPON_OPTION.'.coupons.filter_order', 	'filter_order', 	'c.coupon_code', 'cmd' );
-		$filter_order_Dir	= JFactory::getApplication()->getUserStateFromRequest( AWOCOUPON_OPTION.'.coupons.filter_order_Dir',	'filter_order_Dir',	'', 'word' );
-		$filter_state 	= JFactory::getApplication()->getUserStateFromRequest( AWOCOUPON_OPTION.'.coupons.filter_state', 	'filter_state', 	'', 'cmd' );
-		$filter_coupon_value_type = JFactory::getApplication()->getUserStateFromRequest( AWOCOUPON_OPTION.'.coupons.filter_coupon_value_type', 		'filter_coupon_value_type', 		'', 'cmd' );
-		$filter_discount_type = JFactory::getApplication()->getUserStateFromRequest( AWOCOUPON_OPTION.'.coupons.filter_discount_type', 		'filter_discount_type', 		'', 'cmd' );
-		$filter_function_type = JFactory::getApplication()->getUserStateFromRequest( AWOCOUPON_OPTION.'.coupons.filter_function_type', 		'filter_function_type', 		'', 'cmd' );
-		$filter_expiration = JFactory::getApplication()->getUserStateFromRequest( AWOCOUPON_OPTION.'.coupons.filter_expiration', 		'filter_expiration', 		'', 'cmd' );
-		$search 			= JFactory::getApplication()->getUserStateFromRequest( AWOCOUPON_OPTION.'.coupons.search', 			'search', 			'', 'string' );
-		$search 			= awolibrary::dbescape( trim(JString::strtolower( $search ) ) );
+		$filter_order		= $mainframe->getUserStateFromRequest( $option.'.coupons.filter_order', 	'filter_order', 	'c.coupon_code', 'cmd' );
+		$filter_order_Dir	= $mainframe->getUserStateFromRequest( $option.'.coupons.filter_order_Dir',	'filter_order_Dir',	'', 'word' );
+		$filter_state 	= $mainframe->getUserStateFromRequest( $option.'.coupons.filter_state', 	'filter_state', 	'', 'cmd' );
+		$filter_coupon_value_type = $mainframe->getUserStateFromRequest( $option.'.coupons.filter_coupon_value_type', 		'filter_coupon_value_type', 		'', 'cmd' );
+		$filter_discount_type = $mainframe->getUserStateFromRequest( $option.'.coupons.filter_discount_type', 		'filter_discount_type', 		'', 'cmd' );
+		$filter_function_type = $mainframe->getUserStateFromRequest( $option.'.coupons.filter_function_type', 		'filter_function_type', 		'', 'cmd' );
+		$filter_expiration = $mainframe->getUserStateFromRequest( $option.'.coupons.filter_expiration', 		'filter_expiration', 		'', 'cmd' );
+		$search 			= $mainframe->getUserStateFromRequest( $option.'.coupons.search', 			'search', 			'', 'string' );
+		$search 			= $db->getEscaped( trim(JString::strtolower( $search ) ) );
+
+		//add css and submenu to document
+		$document->addStyleSheet('components/com_awocoupon/assets/css/style.css');
 
 		//create the toolbar
-		JToolBarHelper::title( JText::_( 'COM_AWOCOUPON_CP_COUPONS' ), 'coupons' );
+		JToolBarHelper::title( JText::_( 'COUPONS' ), 'coupons' );
 		JToolBarHelper::publishList('publishcoupon');
 		JToolBarHelper::unpublishList('unpublishcoupon');
 		JToolBarHelper::divider();
 		JToolBarHelper::addNew('addcoupon');
 		JToolBarHelper::editList('editcoupon');
 		JToolBarHelper::divider();
-		JToolBarHelper::deleteList( JText::_( 'COM_AWOCOUPON_ERR_CONFIRM_DELETE' ),'removecoupon');
+		JToolBarHelper::deleteList( JText::_( 'ARE YOU SURE YOU WANT TO DELETE THE COUPONS' ),'removecoupon');
 		JToolBarHelper::spacer();
 
 		//Get data from the model
-		$rows      	= $this->get( 'Data');
-		$pageNav 	= $this->get( 'Pagination' );
+		$rows      	= & $this->get( 'Data');
+		$pageNav 	= & $this->get( 'Pagination' );
 
 		// build the html for published		
 		$tmp = array();
-		$tmp[] = JHTML::_('select.option',  '', ' - '.JText::_( 'COM_AWOCOUPON_SELECT_STATUS' ).' - ' );
-		foreach($def_lists['published'] as $key=>$value) $tmp[] = JHTML::_('select.option', $key, $value);
+		$tmp[] = JHTML::_('select.option',  '', ' - '.JText::_( 'SELECT STATE' ).' - ' );
+		$tmp[] = JHTML::_('select.option',  '1', JText::_( 'ACTIVE' ) );
+		$tmp[] = JHTML::_('select.option',  '-1', JText::_( 'INACTIVE' ) );
 		$lists['published'] = JHTML::_('select.genericlist', $tmp, 'filter_state', 'class="inputbox" size="1" onchange="submitform( );"', 'value', 'text', $filter_state );		
 
 		$tmp = array();
-		$tmp[] = JHTML::_('select.option',  '', ' - '.JText::_( 'COM_AWOCOUPON_SELECT_PERCENT_AMOUNT' ).' - ' );
-		foreach($def_lists['coupon_value_type'] as $key=>$value) $tmp[] = JHTML::_('select.option', $key, $value);
+		$tmp[] = JHTML::_('select.option',  '', ' - '.JText::_( 'SELECT PERCENT OR TOTAL' ).' - ' );
+		$tmp[] = JHTML::_('select.option',  'percent', JText::_( 'PERCENTAGE' ) );
+		$tmp[] = JHTML::_('select.option',  'total', JText::_( 'TOTAL' ) );
 		$lists['coupon_value_type'] = JHTML::_('select.genericlist', $tmp, 'filter_coupon_value_type', 'class="inputbox" size="1" onchange="submitform( );"', 'value', 'text', $filter_coupon_value_type );		
 
 		$tmp = array();
-		$tmp[] = JHTML::_('select.option',  '', ' - '.JText::_( 'COM_AWOCOUPON_SELECT_DISCOUNT_TYPE' ).' - ' );
-		foreach($def_lists['discount_type'] as $key=>$value) $tmp[] = JHTML::_('select.option', $key, $value);
+		$tmp[] = JHTML::_('select.option',  '', ' - '.JText::_( 'SELECT DISCOUNT TYPE' ).' - ' );
+		$tmp[] = JHTML::_('select.option',  'overall', JText::_( 'OVERALL' ) );
+		$tmp[] = JHTML::_('select.option',  'specific', JText::_( 'SPECIFIC' ) );
 		$lists['discount_type'] = JHTML::_('select.genericlist', $tmp, 'filter_discount_type', 'class="inputbox" size="1" onchange="submitform( );"', 'value', 'text', $filter_discount_type );		
-
 		
 		// search filter
 		$lists['search']= $search;
@@ -79,8 +83,8 @@ class AwoCouponViewCoupons extends AwoCouponView {
 		$this->assignRef('rows'      	, $rows);
 		$this->assignRef('pageNav' 		, $pageNav);
 		$this->assignRef('ordering'		, $ordering);
-		$this->assignRef('def_lists', $def_lists);
 
 		parent::display($tpl);
 	}
 }
+?>

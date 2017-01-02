@@ -1,24 +1,10 @@
-/**
- * @component AwoCoupon for Virtuemart
- * @copyright Copyright (C) Seyi Awofadeju - All rights reserved.
- * @license : GNU/GPL
- * @Website : http://awodev.com
- **/
-
 /* @group header icons */
 .icon-48-awocoupon			{ background-image: url(../images/awocoupon.png); }
-.icon-48-new				{ background-image: url(../images/icon-48-new.png); }
+.icon-48-plus				{ background-image: url(../images/plus.png); }
 .icon-48-coupons			{ background-image: url(../images/coupons.png); }
 .icon-48-new				{ background-image: url(../images/icon-48-new.png); }
 .icon-48-edit				{ background-image: url(../images/icon-48-edit.png); }
-.icon-48-import				{ background-image: url(../images/icon-48-import.png); }
-.icon-48-installation		{ background-image: url(../images/icon-48-installation.png); }
-.icon-48-report				{ background-image: url(../images/icon-48-report.png); }
-.icon-48-history			{ background-image: url(../images/icon-48-history.png); }
-.icon-48-giftcert			{ background-image: url(../images/icon-48-giftcert.png); }
 /* @end */
-
-.icon-32-runreport  			 { background-image: url(../images/runreport.png); }
 
 h2.settingstitle {font-size: 18px;font-weight: bold;margin: 0;padding: 0 5px;color: #0B55C4;}
 
@@ -80,9 +66,6 @@ h2.settingstitle {font-size: 18px;font-weight: bold;margin: 0;padding: 0 5px;col
 #dash_generalstats .inactive {
 	color: red;
 }
-#dash_generalstats .template {
-	color: darkblue;
-}
 
 #dash_generalstats .trackbacks {
 	color: black;
@@ -143,86 +126,3 @@ table.configtable td div input{margin-top:10px;}
 /** @group General CSS **/
 .update{color:#FFFFFF;text-align:center;}
 /* @end */
-
-
-
-/* submenu styling */
-.submenu {list-style: none;padding: 0;margin: 0;}
-.submenu li {float: left;padding: 0;margin: 0;}
-.submenu li a,
-.submenu span.nolink 
-	{cursor: pointer;padding: 0px 15px;border-right: 1px solid #ccc;font-weight: bold;color: #0B55C4;line-height: 12px;height: 12px;}
-.submenu span.nolink {color: #999;}
-.submenu a.active,.submenu span.nolink.active {color: #000;text-decoration: underline;}
-
-
-
-.function_type2_holder { height:250px;overflow:auto;overflow-x:hidden; border-top:1px inset #CCCCCC; border-left:1px inset #CCCCCC; border-bottom:1px inset #cccccc; border-right:1px inset #cccccc; }
-.function_type2_holder  table.adminlist td{ padding-top:0; padding-bottom:0; }
-.function_type2_holder  table.adminlist td.last{ padding-right:19px;}
-
-.fltlft { float: left; }
-.fltrt { float: right; }
-
-
-/* joomla 3.0 */
-div.width-100 { width: 100%; }
-div.width-50 { width: 50%; }
-fieldset.adminform { margin: 10px; overflow: hidden; border: 1px #ccc solid; text-align: left; }
-fieldset.adminform legend { margin: 0; padding: 0; color: #146295; font-size: 2em; font-weight: bold; width:auto; border:0; line-height:1.182em; margin-left:20px; }
-div.width-20 fieldset, div.width-30 fieldset, div.width-35 fieldset, div.width-40 fieldset, div.width-45 fieldset, div.width-50 fieldset, div.width-55 fieldset, div.width-60 fieldset, div.width-65 fieldset, div.width-70 fieldset, div.width-80 fieldset, div.width-100 fieldset {
-background-color: white;
-padding: 5px 17px 17px 17px;
-}
-div.m input, div.m select, div.m textarea{width:auto;}
-div.clr {clear:both;}
-
-
-
-
-.pane-sliders { margin: 18px 0 0 0; position: relative; }
-.pane-sliders .panel { margin-bottom: 3px; border: solid 1px #ccc; }
-.pane-sliders .panel h3 { background: #fafafa;  color: #666; }
-.pane-sliders .title { margin: 0; padding: 2px 2px 2px 5px; color: #666; cursor: pointer; }
-.pane-toggler-down { border-bottom: 1px solid #ccc; }
-h3 { font-size: 1.182em; }
-h3.pane-toggler a, h3.pane-toggler-down a { font-size:13px; text-decoration:none; }
-
-
-
-
-/* toolbar menu */
-#submenu-box { margin-bottom: 25px; padding: 10px 0 0 0; }
-#submenu-box div.m {padding: 6px 8px;}
-div.m { padding:10px; border: 1px solid #CCC;background-color: #F4F4F4;-webkit-border-radius: 10px;-moz-border-radius: 10px;border-radius: 10px;border-top-left-radius: 10px 10px;border-top-right-radius: 10px 10px;border-bottom-right-radius: 10px 10px;border-bottom-left-radius: 10px 10px;}#submenu { list-style: none;padding: 0;margin: 0; line-height: 115%; }
-#submenu li { float: left; padding: 0; margin: 0; display: list-item; }
-#submenu li a, #submenu span.nolink {cursor: pointer;padding: 0 15px;border-right: 1px solid #CCC;font-size: 1.1em;font-weight: bold;color: gray;line-height: 14px;height: 12px;text-decoration: none;outline: none;}
-#submenu a:hover, #submenu a.active, #submenu span.nolink.active { color: #146295; background: white; }
-
-
-/* dashboard */
-.cpanel div.icon, #cpanel div.icon {text-align: center;margin-right: 15px;float: left;margin-bottom: 15px;}
-.cpanel div.icon a, #cpanel div.icon a {background-color: white;background-position: -30px;display: block;float: left;height: 97px;width: 108px;color: #565656;vertical-align: middle;text-decoration: none;border: 1px solid #CCC;-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;-webkit-transition-property: background-position, -webkit-border-bottom-left-radius, -webkit-box-shadow;-moz-transition-property: background-position, -moz-border-radius-bottomleft, -moz-box-shadow;-webkit-transition-duration: 0.8s;-moz-transition-duration: 0.8s;border-top-left-radius: 5px 5px;border-top-right-radius: 5px 5px;border-bottom-right-radius: 5px 5px;border-bottom-left-radius: 5px 5px;}
-#cpanel img, .cpanel img {padding: 10px 0;margin: 0 auto;border: 0 none;}
-.cpanel div.icon a, #cpanel div.icon a {color: #565656;}
-.cpanel div.icon, #cpanel div.icon {text-align: center;}
-#cpanel span, .cpanel span {display: block;text-align: center;}
-
-
-/* tabs */
-dl.tabs { float: left; margin: 1px 0 0 0; z-index: 50; width:100%; background-color:#f4f4f4;}
-dl.tabs dt { float: left; padding: 4px 10px;  border: 1px solid #CCC; margin-left: 3px; background: #E9E9E9;  color: #666; }
-dl.tabs dt.open { background: #F9F9F9;  border-bottom: 1px solid #F9F9F9; z-index: 100; color: black; }
-dl.tabs dt.open { color: black; }
-dl.tabs dt h3 { margin: 0; padding: 0; font-size: 1em; font-weight: normal; }
-dl.tabs dt h3 a:link { color: #333; outline: medium none; text-decoration: none; }
-
-
-
-/* tables */
-table.adminlist { width: 100%; border-spacing: 1px; background-color: #F3F3F3; color: #666; border-collapse: separate; }
-table.adminlist thead th { text-align: center; background: #F7F7F7; color: #666; border-bottom: 1px solid #CCC; border-left: 1px solid white; }
-table.adminlist td, table.adminlist th { padding: 4px; }
-table.adminlist tbody tr { background-color: white; text-align: left; }
-table.adminlist tbody tr td { background: white; border: 1px solid white; }
-table.adminlist td { padding-left: 8px; }

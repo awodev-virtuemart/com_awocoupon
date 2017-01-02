@@ -5,13 +5,13 @@
  * @license : GNU/GPL
  * @Website : http://awodev.com
  **/
- 
+
 // Disallow direct access to this file
 defined('_JEXEC') or die('Restricted access');
 
 jimport( 'joomla.application.component.view');
 
-class AwoCouponViewUsers extends JView {
+class AwoCouponViewProducts extends JView {
 
 	function display($tpl = null) {
 		global $mainframe, $option;
@@ -31,9 +31,9 @@ class AwoCouponViewUsers extends JView {
 		$cid 		= JRequest::getVar( 'cid' );
 		
 		//get vars
-		$id		= $mainframe->getUserStateFromRequest( $option.'.users.id', 	'id', 	JRequest::getVar( 'id' ), 'cmd' );
-		$filter_order		= $mainframe->getUserStateFromRequest( $option.'.users.filter_order', 	'filter_order', 	'c.coupon_code', 'cmd' );
-		$filter_order_Dir	= $mainframe->getUserStateFromRequest( $option.'.users.filter_order_Dir',	'filter_order_Dir',	'', 'word' );
+		$id		= $mainframe->getUserStateFromRequest( $option.'.products.id', 	'id', 	JRequest::getVar( 'id' ), 'cmd' );
+		$filter_order		= $mainframe->getUserStateFromRequest( $option.'.products.filter_order', 	'filter_order', 	'c.coupon_code', 'cmd' );
+		$filter_order_Dir	= $mainframe->getUserStateFromRequest( $option.'.products.filter_order_Dir',	'filter_order_Dir',	'', 'word' );
 
 		//Get data from the model
 		$row      	= & $this->get( 'Data');

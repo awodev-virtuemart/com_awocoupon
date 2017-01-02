@@ -5,310 +5,242 @@
  * @license : GNU/GPL
  * @Website : http://awodev.com
  **/
+function is_installed() {
+	$file = JPATH_SITE.'/administrator/components/com_virtuemart/classes/ps_coupon.php';
 
-
-
-
-function com_install(){ 
-	$installer = new awocouponInstall('install');
-	if(version_compare( JVERSION, '1.6.0', 'ge' )) $installer->install_tableupdatedj2();
-	$installer->install_particulars(); 
-}
-
-function com_uninstall(){
-
-	echo '<div><b>Database Tables Uninstallation: <font color="green">Successful</font></b></div>';
-
-	$installer = new awocouponInstall('uninstall');
-	$installer->uninstall_plugins();
-}
-
-class com_awocouponInstallerScript {
-
-	function install($parent) {
-		$installer = new awocouponInstall('install');
-		$installer->install_particulars();
-	}
- 
-	function update($parent) {
-		$installer = new awocouponInstall('install');
-		$installer->install_tableupdatedj2();
-		$installer->install_particulars();
-
-	}
+	if (!file_exists($file) || !is_writable($file)) return FALSE;
+	$content = file_get_contents($file);
 	
-	function uninstall($parent) {
-		$installer = new awocouponInstall('uninstall');
-		$installer->uninstall_plugins();
-	}
-	function preflight($type, $parent) {}
-	function postflight($type, $parent) {}
+	if(strpos($content,	'"com_awocoupon".DS."assets".DS."virtuemart".DS."ps_coupon_process.php"')!==false) return true;
+	return false;
+
 }
+function write_to_ps_coupon () {
+	$file = JPATH_SITE.'/administrator/components/com_virtuemart/classes/ps_coupon.php';
 
-
-
-
-
-
-class awocouponInstall {
-
-	var $is_update = false;
-	var $logger = array();
-	var $is_debug = false;
-	var $debug_file = 'awocoupon_install.xml';
-
+	if (!file_exists($file) || !is_writable($file)) return FALSE;
 	
+	// get and replace content
+	$content = file_get_contents($file);
+	$patterns = array(
+		'/(function\s+process_coupon_code\s*\(\s*[$]d\s*\)\s*[{]\s*)/i',
+		'/(function\s+remove_coupon_code\s*\(\s*[&][$]d\s*\)\s*[{]\s*)/i',
+		);
+	$replacements = array(
+		'$1return require_once (JPATH_ADMINISTRATOR.DS."components".DS."com_awocoupon".DS."assets".DS."virtuemart".DS."ps_coupon_process.php");'."\n",
+		'$1return require_once (JPATH_ADMINISTRATOR.DS."components".DS."com_awocoupon".DS."assets".DS."virtuemart".DS."ps_coupon_remove.php");'."\n",
+		);
+	$count = 0;
+	$new_content = preg_replace($patterns, $replacements, $content, -1, $count);
+	//echo '<textarea cols="120" rows="35">'.$new_content.'</textarea>';
+	if($count != 2) return FALSE;
+	
+	if (!@$handle = fopen($file, 'w')) return FALSE;
 
-	public function __construct($type) {
-		if($type == 'install') {
-			$xml_file = JPATH_ADMINISTRATOR.'/components/com_awocoupon/awocoupon.xml';
-			if(!file_exists($xml_file)) echo '<div><b>Database Tables Installation: <font color="green">Successful</font></b></div>';
-			else {
-				
-				$this->is_update = true;
+	// Write $somecontent to our opened file.
+	if (fwrite($handle, $new_content) === FALSE) return FALSE;
+	
+	fclose($handle);
+	return TRUE;
+
+}
+function com_install(){
+	
+	if(is_installed()) {
+		echo "<font color=green>Upgrade Applied Successfully.</font><br />";	
+
+	} else {
+		echo '<div><b>Step 1: <font color="green">Database Installation Applied Successful</font></b></div>';
+
+
+		if(write_to_ps_coupon()) {
+			echo '<div><b>Step 2: <font color="green">Virtuemart Installation Applied Successful</font></b></div>';
+		} else {
+			echo '
+			<div><b>Step 2: <font color="red">Virtuemart Installation Applied Unsuccessful</font></b></div>
+			<style>
+			.title {
+				text-transform: uppercase;
+				font-weight: bold;
+				font-size: large;
+				border-bottom:1px solid #bbbbbb;
+				margin-bottom:15px;
+			}
+			.title2 {
+				font-weight: bold;
+				padding-top: 15px;
 			}
 
-			require_once JPATH_ADMINISTRATOR.'/components/com_awocoupon/awocoupon.config.php';
-		}
-		elseif($type=='uninstall') {
-			
-		}
-		else {
-			JError::raiseWarning(100, 'Invalid');
-			JFactory::getApplication()->redirect('index.php?option=com_installer');
-		}
-	}
-
-	
-	
-	function install_particulars() {
-		if($this->is_debug) {
-		// open file
-			file_put_contents(JPATH_ROOT.'/tmp/'.$this->debug_file,'<?xml version="1.0" encoding="utf-8"?>'."\r\n\t".'<installation version="">'."\r\n");
-		}
-	
-
-		$this->install_tableupdates();
-		$this->install_migrate_vmcoupons();
-		$this->install_plugins();
-		
-		$this->UPGRADE_2015();
-			
-		// Clear Caches
-		$cache = JFactory::getCache();
-		$cache->clean('com_awocoupon');
-		
-		
-	}
-	
-	
-	function install_tableupdatedj2() {
-		// run install.mysql.sql file
-		$db = JFactory::getDBO();
-		$sqlfile = JPATH_ADMINISTRATOR.'/components/com_awocoupon/install.mysql.sql';
-		// Don't modify below this line
-		$buffer = file_get_contents($sqlfile);
-		if ($buffer !== false) {
-			jimport('joomla.installer.helper');
-			$queries = JInstallerHelper::splitSql($buffer);
-			if (count($queries) != 0) {
-				foreach ($queries as $query) {
-					$query = trim($query);
-					if ($query != '' && $query{0} != '#') {
-						$db->setQuery($query);
-						if (!$db->query()) {
-							JError::raiseWarning(1, JText::sprintf('JLIB_INSTALLER_ERROR_SQL_ERROR', $db->stderr(true)));
-							return false;
-						}
-					}
-				}
+			.desc {
+				padding-left:10px;
+				margin-bottom:35px;
 			}
-		}
-	}
-
-	function install_tableupdates() {
-		$dbupgrades = array();
-		if(!$this->_column_exists('#__'.AWOCOUPON,'function_type2')) {
-		// upgrade to 2.0.9
-			$dbupgrades[] = "ALTER TABLE #__".AWOCOUPON." ADD COLUMN `function_type2` enum('product','category') AFTER `function_type`;";
-			$dbupgrades[] = "UPDATE #__".AWOCOUPON." SET `function_type2`='product';";
-		}
-	
-		if(!empty($dbupgrades)) {
-			$db			= JFactory::getDBO();
-			//Apply Upgrades
-			foreach ($dbupgrades AS $query) {
-				$db->setQuery( $query );
-				if(!$db->query()) {
-				//Upgrade failed
-					echo "<font color=red>".$dbupdate['message']." failed! SQL error:" . $db->stderr()."</font><br />";
-				}
+			.desc2 {
+				padding-left:15px;
 			}
-			//Upgrade was successful
-			echo "<div><b>Database Updates:</b> <font color=green>Upgrade Applied Successfully.</font></div>";			
+			.codeparent {
+				margin:20px;
+				margin-top:5px;
+				margin-left:40px;
+			}
+			.codephp {
+				margin-bottom:2px;
+				width:600px;
+				font-size:x-small;
+				text-align:right;
+			}
+			.code {
+				margin: 0px;
+				padding: 6px;
+				border: 1px inset;
+				width: 600px;
+				height: 50px;
+				text-align: left;
+				overflow: auto;
+				background-color:#eeeeee;
+			}
+			.toc {
+				border:1px solid #bbbbbb;
+				background-color:#eeeeee;
+				padding:10px;
+				margin-bottom:35px;
+			}
+			</style>
+			<div class="desc2">
+				Thank you for installing <b>AwoCoupon for Virtuemart</b>.  
+				An error occured when trying to write to a file.  So in order to finish the 
+				installation you have to follow the steps below.  
+				This is also in the user guide.
+				<br><br>
+				This section requires the user to have access to the website files for edit.  
+				You may need to use an ftp client to access the files. <br/>
+				1. &nbsp; Open the file websiteroot/administrator/components/com_virtuemart/classes/ps_coupon.php<br/>
+				2. &nbsp; Right after these lines (around line 158):<br/>
+					<div class="codeparent">
+						<div class="codephp" >PHP Code:</div>
+						<div class="code">
+							<code style="white-space:nowrap">
+								<code>
+									<font color="#000000">
+								
+										<font color="#FF8000">/* function to process a coupon_code entered by a user */</font>
+										<font color="#007700"><br />function</font>
+										<font color="#0000BB">process_coupon_code</font><font
+										color="#007700">( </font>
+										<font color="#0000BB">$d </font>
+										<font color="#007700">) {</font>
+									</font>
+								</code><!-- php buffer end -->
+							</code>
+						</div>
+					</div>
+					<div>&nbsp; &nbsp; &nbsp; Enter the following code:</div>
+					<div class="codeparent">
+						<div class="codephp">PHP Code</div>
+						<div class="code">
+							<code style="white-space:nowrap">
+								<code>
+									<font color="#000000">
+										<font
+										color="#007700">return require_once (</font><font
+										color="#0000BB">JPATH_ADMINISTRATOR</font><font
+										color="#007700">.</font><font
+										color="#0000BB">DS</font><font
+										color="#007700">.</font><font
+										color="#DD0000">"components"</font><font
+										color="#007700">.</font><font
+										color="#0000BB">DS</font><font
+										color="#007700">.</font><font 
+										color="#DD0000">"com_awocoupon"</font><font
+										color="#007700">.</font><font
+										color="#0000BB">DS</font><font
+										color="#007700">.</font><font
+										color="#DD0000">"assets"</font><font 
+										color="#007700">.</font><font
+										color="#0000BB">DS</font><font
+										color="#007700">.</font><font
+										color="#DD0000">"virtuemart"</font><font
+										color="#007700">.</font><font
+										color="#0000BB">DS</font><font
+										color="#007700">.</font><font
+										color="#DD0000">"ps_coupon_process.php"</font><font
+										color="#007700">);</font>
+						
+									</font>
+								</code>
+							</code>
+						</div>
+					</div>
+				3. &nbsp; Right after these lines (around line 135):<br/>
+					<div class="codeparent">
+						<div class="codephp">PHP Code:</div>
+						<div class="code">
+							<code style="white-space:nowrap">
+								<code>
+									<font color="#000000">
+								
+										<font color="#FF8000">/* function to remove coupon coupon_code from the database */</font>
+										<font color="#007700"><br />function</font>
+										<font color="#0000BB">remove_coupon_code</font><font
+										color="#007700">( </font>
+										<font color="#0000BB">&$d </font>
+										<font color="#007700">) {</font>
+									</font>
+								</code><!-- php buffer end -->
+							</code>
+						</div>
+					</div>
+					<div>&nbsp; &nbsp; &nbsp; Enter the following code:</div>
+					<div class="codeparent">
+						<div class="codephp">PHP Code:</div>
+						<div class="code">
+							<code style="white-space:nowrap">
+								<code>
+									<font color="#000000">
+										<font
+										color="#007700">return require_once (</font><font
+										color="#0000BB">JPATH_ADMINISTRATOR</font><font
+										color="#007700">.</font><font
+										color="#0000BB">DS</font><font
+										color="#007700">.</font><font
+										color="#DD0000">"components"</font><font
+										color="#007700">.</font><font
+										color="#0000BB">DS</font><font
+										color="#007700">.</font><font 
+										color="#DD0000">"com_awocoupon"</font><font
+										color="#007700">.</font><font
+										color="#0000BB">DS</font><font
+										color="#007700">.</font><font
+										color="#DD0000">"assets"</font><font 
+										color="#007700">.</font><font
+										color="#0000BB">DS</font><font
+										color="#007700">.</font><font
+										color="#DD0000">"virtuemart"</font><font
+										color="#007700">.</font><font
+										color="#0000BB">DS</font><font
+										color="#007700">.</font><font
+										color="#DD0000">"ps_coupon_remove.php"</font><font
+										color="#007700">);</font>
+						
+									</font>
+								</code>
+							</code>
+						</div>
+					</div>
+			</div>
+			';
 		}
 
-	}
-	
-	function install_migrate_vmcoupons() {
-		if($this->is_update) return;
+		//import Virtuemart Coupons	
+		if(!defined('VM_TABLEPREFIX')) require_once JPATH_ADMINISTRATOR.'/components/com_virtuemart/virtuemart.cfg.php';
+		$db = & JFactory::getDBO();
 		
-		$db			= JFactory::getDBO();
-
-		$sql = 'INSERT INTO #__'.AWOCOUPON.' (coupon_code,num_of_uses,coupon_value_type,coupon_value,discount_type,function_type,min_value,published,startdate,expiration)
-					SELECT coupon_code,IF(coupon_type="gift",1,0),percent_or_total,coupon_value,"overall",
-							IF(coupon_type="gift","giftcert","coupon"),coupon_value_valid,IF(published=1,1,-1),
-							coupon_start_date,coupon_expiry_date
-					  FROM #__virtuemart_coupons';
+		$sql = 'INSERT INTO #__awocoupon (coupon_code,num_of_uses,coupon_value_type,coupon_value,discount_type,function_type)
+					SELECT coupon_code,IF(coupon_type="gift",1,0),percent_or_total,coupon_value,"overall",IF(coupon_type="gift","giftcert","coupon")
+					  FROM #__'.VM_TABLEPREFIX.'_coupons';
 		$db->setQuery($sql);
-		if(!$db->query()) echo "<div><b>Import of Virtuemart coupons: <font color=red>Unsuccessful</font></b></div>";
-		else echo "<div><b>Import of Virtuemart coupons: <font color=green>Successful</font></b></div>";
+		if(!$db->query()) echo "<div><b>Step 3: <font color=red>Import of Virtuemart coupons Applied Unsuccessfully</font></b></div>";
+		else echo "<div><b>Step 3: <font color=green>Import of Virtuemart coupons Applied Successfully</font></b></div>";	
 
 	}
-
-
-
-
-
-
-	function install_plugins() {
-	
-		if(version_compare( JVERSION, '1.6.0', 'ge' )) {
-			//$path		= $installer->getPath('manifest');
-			//$version	= $installer->getManifest()->version;
-			$installer	= JInstaller::getInstance();
-			$manifest	= $installer->getManifest();
-			$src = $installer->getPath('source');
-		}
-		else {
-			//$sourcePath	= $installer->getPath('source');
-			//$version	= $manifest->document->getElementByPath('version');
-			$installer	= JInstaller::getInstance();
-			$manifest	= $installer->getManifest();
-			$manifest	= $manifest->document;
-			$src 		= $installer->getPath('source');
-		}
-//echo '<pre>'; print_r($src); print_r($manifest); exit;
-
-		// Install plugins
-		$db = JFactory::getDBO();
-		$is_success = false;
-		if(version_compare( JVERSION, '1.6.0', 'ge' )) {
-			$plugins = $manifest->xpath('plugins/plugin');
-			foreach($plugins as $plugin){
-				$plugin_attributes = current($plugin);
-				if(empty($plugin_attributes['plugin'])) continue;
-				
-				$pname = $plugin_attributes['plugin'];
-				$pgroup = $plugin_attributes['group'];
-				$path = $src.'/plugins/'.$pgroup;
-				$installer = new JInstaller;
-				$result = $installer->install($path);
-				$status->plugins[] = array('name'=>$pname,'group'=>$pgroup, 'result'=>$result);
-				$db->setQuery('UPDATE #__extensions SET enabled=1 WHERE type="plugin" AND element='.$db->Quote($pname).' AND folder='.$db->Quote($pgroup));
-				$db->query();
-				$is_success = true;
-			}
-		}
-		else {
-			$plugins = $manifest->getElementByPath('plugins');
-			if (is_a($plugins, 'JSimpleXMLElement') && count($plugins->children())) {
-				foreach ($plugins->children() as $plugin) {
-					$pname = $plugin->attributes('plugin');
-					$pgroup = $plugin->attributes('group');
-					$path = $src.DS.'plugins'.DS.$pgroup;
-					$installer = new JInstaller;
-					$result = $installer->install($path);
-					$status->plugins[] = array('name'=>$pname,'group'=>$pgroup, 'result'=>$result);
-
-					$db->setQuery('UPDATE #__plugins SET published=1 WHERE element='.$db->Quote($pname).' AND folder='.$db->Quote($pgroup));
-					$db->query();
-					$is_success = true;
-				}
-			}
-		}
-		if($is_success) echo '<div><b>Plugin Installation: <font color="green">Successful</font></b></div>';
-	}
-	
-
-	function uninstall_plugins() {
-		if(version_compare( JVERSION, '1.6.0', 'ge' )) {
-			$installer	= JInstaller::getInstance();
-			$manifest	= $installer->getManifest();
-		}
-		else {
-			$installer	= JInstaller::getInstance();
-			$manifest	= $installer->getManifest();
-			$manifest	= $manifest->document;
-		}
-
-		$db = JFactory::getDBO();
-		$is_success = false;
-		if(version_compare( JVERSION, '1.6.0', 'ge' )) {
-			$plugins = $manifest->xpath('plugins/plugin');
-			foreach ($plugins as $plugin) {
-				$plugin_attributes = current($plugin);
-				if(empty($plugin_attributes['plugin'])) continue;
-
-				$pname = $plugin_attributes['plugin'];
-				$pgroup = $plugin_attributes['group'];
-				$db->setQuery('SELECT `extension_id` FROM #__extensions WHERE `type`="plugin" AND element='.$db->Quote($pname).' AND folder='.$db->Quote($pgroup));
-				$ids = array_keys( $db->loadObjectList('extension_id') );
-				if (count($ids)) {
-					foreach ($ids as $id) {
-						$installer = new JInstaller;
-						$result = $installer->uninstall('plugin', $id);
-					}
-				}
-				$is_success = true;
-			}
-		}
-		else {
-			$plugins = $manifest->getElementByPath('plugins');
-			if (is_a($plugins, 'JSimpleXMLElement') && count($plugins->children())) {
-				foreach ($plugins->children() as $plugin) {
-					$pname = $plugin->attributes('plugin');
-					$pgroup = $plugin->attributes('group');
-					$db->setQuery('SELECT `id` FROM #__plugins WHERE element = '.$db->Quote($pname).' AND folder = '.$db->Quote($pgroup));
-					$plugins = $db->loadResultArray();
-					if (count($plugins)) {
-						foreach ($plugins as $plugin) {
-							$installer = new JInstaller;
-							$result = $installer->uninstall('plugin', $plugin, 0);
-						}
-					}
-					$is_success = true;
-				}
-			}
-		}
-		if($is_success) echo '<div><b>Plugin Uninstallation: <font color="green">Successful</font></b></div>';
-	}
-
-	function log($data) {
-		$this->logger[] = $data;
-		if($this->is_debug) file_put_contents(JPATH_ROOT.'/tmp/'.$this->debug_file,$data,FILE_APPEND);
-	}
-	
-	
-	
-	function _column_exists($table,$column) {
-		$db = JFactory::getDBO();
-		$db->setQuery('DESC '.$table);
-		$columns = $db->loadObjectList('Field');
-		return isset($columns[$column]) ? true : false;
-	}
-
-	function UPGRADE_2015() {
-		$file = JPATH_ADMINISTRATOR.'/components/com_awocoupon/admin.awocoupon.php';
-		if(file_exists($file)) unlink($file);
-	}
-	
 }
-
-
-
-
-
-
-
-

@@ -59,7 +59,8 @@
 1. <a href="#Introduction">Introduction</a><br/>
 2. <a href="#Installation">Installation</a><br/>
 &nbsp; &nbsp; &nbsp;2.1 <a href="#System-Requirements">System Requirements</a><br/>
-&nbsp; &nbsp; &nbsp;2.2 <a href="#Installation">Virtuemart Coupon</a><br/>
+&nbsp; &nbsp; &nbsp;2.2 <a href="#Installation-1">Step 1 – Virtuemart Coupon</a><br/>
+&nbsp; &nbsp; &nbsp;2.3 <a href="#Installation-2">Step 2 – Virtuemart Injection (ONLY if Unsuccessful)</a><br/>
 3. <a href="#Administration">Using the Software - Administration</a><br/>
 &nbsp; &nbsp; &nbsp;3.1 <a href="#Getting-Around">Getting Around</a><br/>
 &nbsp; &nbsp; &nbsp;3.2 <a href="#Configuring-Coupon">Configuring a Coupon</a><br/>
@@ -95,8 +96,8 @@
 	knowledge of php code as well as write access to your joomla
 	source code will be needed.  Please read through the instructions carefully.
 	<div class="title2" id="System-Requirements">System requirements</div>
-	<div class="desc2">Joomla 1.5 and up / Virtuemart 2 and up</div>
-	<div class="title2" id="Installation">Virtuemart Coupon</div>
+	<div class="desc2">Joomla 1.5, Virtuemart 1.1.2, 1.1.3, 1.1.4, 1.1.5, 1.1.6, 1.1.7</div>
+	<div class="title2" id="Installation-1">Step 1 – Virtuemart Coupon</div>
 	<div class="desc2">
 		1. &nbsp; Download Virtuemart Couon to a location on your computer<br/>
 		2. &nbsp; Log into Joomla as an Administrator<br/>
@@ -104,8 +105,128 @@
 		4. &nbsp; Under the “Upload Package File" section press the button "Browse…"<br/>
 		5. &nbsp; Find and select the file, com_vmcoupon.zip, downloaded to your computer<br/>
 		6. &nbsp; Install component by pressing "Upload File & Install" button<br/>
-		7. &nbsp; You will receive a page telling you the status of the installation.  
-	</div>	
+		7. &nbsp; You will receive a page telling you the status of step 1 and step 2.  
+				 If step 2 was successful, you are done, if not, please follow instructions below for step 2.
+		(if unsuccessful, see Section 7. Troubleshooting)
+	</div>
+	<div class="title2" id="Installation-2">Step 2 – Virtuemart Injection (ONLY if Unsuccessful)</div>
+	<div class="desc2">
+		This section requires the user to have access to the website files for edit.  
+		You may need to use an ftp client to access the files. <br/>
+		1. &nbsp; Open the file $webroot/administrator/components/com_virtuemart/classes/ps_coupon.php<br/>
+		2. &nbsp; Right after these lines (around line 158):<br/>
+			<div class="codeparent">
+				<div class="codephp" >PHP Code:</div>
+				<div class="code">
+					<code style="white-space:nowrap">
+						<code>
+							<font color="#000000">
+						
+								<font color="#FF8000">/* function to process a coupon_code entered by a user */</font>
+								<font color="#007700"><br />function</font>
+								<font color="#0000BB">process_coupon_code</font><font
+								color="#007700">( </font>
+								<font color="#0000BB">$d </font>
+								<font color="#007700">) {</font>
+							</font>
+						</code><!-- php buffer end -->
+					</code>
+				</div>
+			</div>
+			<div>&nbsp; &nbsp; &nbsp; Enter the following code:</div>
+			<div class="codeparent">
+				<div class="codephp">PHP Code</div>
+				<div class="code">
+					<code style="white-space:nowrap">
+						<code>
+							<font color="#000000">
+								<font
+								color="#007700">return require_once (</font><font
+								color="#0000BB">JPATH_ADMINISTRATOR</font><font
+								color="#007700">.</font><font
+								color="#0000BB">DS</font><font
+								color="#007700">.</font><font
+								color="#DD0000">"components"</font><font
+								color="#007700">.</font><font
+								color="#0000BB">DS</font><font
+								color="#007700">.</font><font 
+								color="#DD0000">"com_awocoupon"</font><font
+								color="#007700">.</font><font
+								color="#0000BB">DS</font><font
+								color="#007700">.</font><font
+								color="#DD0000">"assets"</font><font 
+								color="#007700">.</font><font
+								color="#0000BB">DS</font><font
+								color="#007700">.</font><font
+								color="#DD0000">"virtuemart"</font><font
+								color="#007700">.</font><font
+								color="#0000BB">DS</font><font
+								color="#007700">.</font><font
+								color="#DD0000">"ps_coupon_process.php"</font><font
+								color="#007700">);</font>
+				
+							</font>
+						</code>
+					</code>
+				</div>
+			</div>
+		3. &nbsp; Right after these lines (around line 135):<br/>
+			<div class="codeparent">
+				<div class="codephp">PHP Code:</div>
+				<div class="code">
+					<code style="white-space:nowrap">
+						<code>
+							<font color="#000000">
+						
+								<font color="#FF8000">/* function to remove coupon coupon_code from the database */</font>
+								<font color="#007700"><br />function</font>
+								<font color="#0000BB">remove_coupon_code</font><font
+								color="#007700">( </font>
+								<font color="#0000BB">&$d </font>
+								<font color="#007700">) {</font>
+							</font>
+						</code><!-- php buffer end -->
+					</code>
+				</div>
+			</div>
+			<div>&nbsp; &nbsp; &nbsp; Enter the following code:</div>
+			<div class="codeparent">
+				<div class="codephp">PHP Code:</div>
+				<div class="code">
+					<code style="white-space:nowrap">
+						<code>
+							<font color="#000000">
+								<font
+								color="#007700">return require_once (</font><font
+								color="#0000BB">JPATH_ADMINISTRATOR</font><font
+								color="#007700">.</font><font
+								color="#0000BB">DS</font><font
+								color="#007700">.</font><font
+								color="#DD0000">"components"</font><font
+								color="#007700">.</font><font
+								color="#0000BB">DS</font><font
+								color="#007700">.</font><font 
+								color="#DD0000">"com_awocoupon"</font><font
+								color="#007700">.</font><font
+								color="#0000BB">DS</font><font
+								color="#007700">.</font><font
+								color="#DD0000">"assets"</font><font 
+								color="#007700">.</font><font
+								color="#0000BB">DS</font><font
+								color="#007700">.</font><font
+								color="#DD0000">"virtuemart"</font><font
+								color="#007700">.</font><font
+								color="#0000BB">DS</font><font
+								color="#007700">.</font><font
+								color="#DD0000">"ps_coupon_remove.php"</font><font
+								color="#007700">);</font>
+				
+							</font>
+						</code>
+					</code>
+				</div>
+			</div>
+	</div>
 </div>
 
 

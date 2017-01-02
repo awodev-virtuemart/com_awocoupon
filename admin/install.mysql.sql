@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS #__awocoupon_vm (
+CREATE TABLE IF NOT EXISTS #__awocoupon (
 	`id` int(16) NOT NULL auto_increment,
 	`coupon_code` varchar(32) NOT NULL default '',
 	`num_of_uses` INT NOT NULL DEFAULT 0,
@@ -7,35 +7,26 @@ CREATE TABLE IF NOT EXISTS #__awocoupon_vm (
 	`min_value` decimal(12,2),
 	`discount_type` enum('specific','overall') NOT NULL DEFAULT 'overall',
 	`function_type` enum('coupon','giftcert') NOT NULL DEFAULT 'coupon',
-	`function_type2` enum('product','category'),
-	`startdate` DATE,
 	`expiration` DATE,
 	`published` TINYINT NOT NULL DEFAULT 1,
 	PRIMARY KEY  (`id`)
 );
 
-CREATE TABLE IF NOT EXISTS #__awocoupon_vm_product (
+CREATE TABLE IF NOT EXISTS #__awocoupon_product (
 	`id` int(16) NOT NULL auto_increment,
 	`coupon_id` varchar(32) NOT NULL default '',
 	`product_id` INT NOT NULL,
 	PRIMARY KEY  (`id`)
 );
 
-CREATE TABLE IF NOT EXISTS #__awocoupon_vm_category (
-	`id` int(16) NOT NULL auto_increment,
-	`coupon_id` varchar(32) NOT NULL default '',
-	`category_id` INT NOT NULL,
-	PRIMARY KEY  (`id`)
-);
-
-CREATE TABLE IF NOT EXISTS #__awocoupon_vm_user (
+CREATE TABLE IF NOT EXISTS #__awocoupon_user (
 	`id` int(16) NOT NULL auto_increment,
 	`coupon_id` varchar(32) NOT NULL default '',
 	`user_id` INT NOT NULL,
 	PRIMARY KEY  (`id`)
 );
 
-CREATE TABLE IF NOT EXISTS #__awocoupon_vm_history (
+CREATE TABLE IF NOT EXISTS #__awocoupon_user_uses (
 	`coupon_id` varchar(32) NOT NULL default '',
 	`user_id` INT NOT NULL,
 	`num` INT NOT NULL DEFAULT 0,

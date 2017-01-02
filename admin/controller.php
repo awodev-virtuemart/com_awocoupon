@@ -11,15 +11,7 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.controller');
 
-
-if(version_compare( JVERSION, '3.0.0', 'ge' )) { class AwoCouponControllerConnect extends JControllerForm {} }
-else {
-	jimport('joomla.application.component.controller');
-	class AwoCouponControllerConnect extends JController {}
-}
-
-
-class AwoCouponController extends AwoCouponControllerConnect {
+class AwoCouponController extends JController {
 	/**
 	 * Constructor
 	 **/
@@ -36,32 +28,21 @@ class AwoCouponController extends AwoCouponControllerConnect {
 		$this->registerTask( 'publishcoupon', 	'publishcoupon' );
 		$this->registerTask( 'unpublishcoupon', 	'unpublishcoupon' );
 
+		$this->registerTask( 'adduser',			'adduser' );
+		$this->registerTask( 'saveuser',		'saveuser' );
+		$this->registerTask( 'canceluser', 		'canceluser' );
+		$this->registerTask( 'removeuser', 		'removeuser' );
 		
-		$this->registerTask( 'processreport', 	'processreport' );
+		$this->registerTask( 'addproduct',		'addproduct' );
+		$this->registerTask( 'saveproduct',		'saveproduct' );
+		$this->registerTask( 'cancelproduct', 	'cancelproduct' );
+		$this->registerTask( 'removeproduct', 	'removeproduct' );
 		
-		$this->registerTask( 'saveimport', 		'saveimport' );
-		$this->registerTask( 'cancelimport',		'cancelimport' );
-		
-		$this->registerTask( 'saveconfig',		'saveconfig' );
-		$this->registerTask( 'applyconfig',		'saveconfig' );
-		$this->registerTask( 'cancelconfig', 	'cancelconfig' );
-
-
-		$this->registerTask( 'addgiftcertproduct',		'editgiftcertproduct' );
-		$this->registerTask( 'savegiftcertproduct', 		'savegiftcertproduct' );
-		$this->registerTask( 'cancelgiftcertproduct',		'cancelgiftcertproduct' );
-		$this->registerTask( 'editgiftcertproduct',		'editgiftcertproduct' );
-		$this->registerTask( 'removegiftcertproduct',		'removegiftcertproduct' );
-		$this->registerTask( 'publishgiftcertproduct', 	'publishgiftcertproduct' );
-		$this->registerTask( 'unpublishgiftcertproduct', 	'unpublishgiftcertproduct' );
-	}
-	function display($cachable = false,$urlparams=false)  {
-		JRequest::setVar('view', JRequest::getCmd('view', 'dashboard'));		
-		parent::display($cachable,$urlparams);
 	}
 
 	
 	function savecoupon() {
+		global $mainframe;
 		
 		// Check for request forgeries
 		JRequest::checkToken() or jexit( 'Invalid Token' );
@@ -72,17 +53,23 @@ class AwoCouponController extends AwoCouponControllerConnect {
 
 		if ( $model->store($post) ) {
 
-			$this->setRedirect('index.php?option='.AWOCOUPON_OPTION.'&view=coupons', JText::_( 'COM_AWOCOUPON_MSG_DATA_SAVED' ));
+			$cache = &JFactory::getCache('page');
+			$cache->clean();
+
+			$this->setRedirect('index.php?option=com_awocoupon&view=coupons', JText::_( 'COUPON SAVED' ));
 		} else {
+			$msg = JText::_( 'ERROR SAVING COUPON' );
+			$mainframe->enqueueMessage(JText::_( 'ERROR SAVING COUPON' ), 'error');
 			return $this->execute('editcoupon');
 		}
 
 
 	}
-	function cancelcoupon() {	
+	function cancelcoupon() {
+	
 		// Check for request forgeries
 		JRequest::checkToken() or jexit( 'Invalid Token' );
-		$this->setRedirect( 'index.php?option='.AWOCOUPON_OPTION.'&view=coupons' );
+		$this->setRedirect( 'index.php?option=com_awocoupon&view=coupons' );
 	}
 	function editcoupon( ) {
 	
@@ -92,171 +79,170 @@ class AwoCouponController extends AwoCouponControllerConnect {
 		parent::display();
 	}
 	function removecoupon() {
+		global $mainframe;
 		// Check for request forgeries
 		JRequest::checkToken() or jexit( 'Invalid Token' );
 		
 		$cid 	= JRequest::getVar( 'cid', array(0), 'post', 'array' );
 
 		if (!is_array( $cid ) || count( $cid ) < 1) {
-			JFactory::getApplication()->enqueueMessage(JText::_( 'COM_AWOCOUPON_ERR_SELECT_ITEM' ), 'error');
+			$mainframe->enqueueMessage(JText::_( 'SELECT A COUPON' ), 'error');
 		} else {
 
 			$model = $this->getModel('coupons');
 
-			if(!$model->delete($cid)) JFactory::getApplication()->enqueueMessage($model->getError(), 'error');
+			if(!$model->delete($cid)) $mainframe->enqueueMessage($model->getError(), 'error');
 			else {
-				$this->setRedirect( 'index.php?option='.AWOCOUPON_OPTION.'&view=coupons', count( $cid ).' '.JText::_('COM_AWOCOUPON_MSG_ITEMS_DELETED') );
+				$cache = &JFactory::getCache('com_awocoupon');
+				$cache->clean();
+				$this->setRedirect( 'index.php?option=com_awocoupon&view=coupons', count( $cid ).' '.JText::_('COUPONS DELETED') );
 			}
 		}
 	}
 	function publishcoupon() {
+		global $mainframe;
+		
 		// Check for request forgeries
 		JRequest::checkToken() or jexit( 'Invalid Token' );
 		
 		$cid 	= JRequest::getVar( 'cid', array(0), 'post', 'array' );
 
 		if (!is_array( $cid ) || count( $cid ) < 1) {
-			JFactory::getApplication()->enqueueMessage(JText::_( 'COM_AWOCOUPON_ERR_SELECT_ITEM' ), 'error');
+			$mainframe->enqueueMessage(JText::_( 'SELECT A COUPON' ), 'error');
 		} else {
 
 			$model = $this->getModel('coupons');
 
-			if(!$model->publish($cid, 1)) JFactory::getApplication()->enqueueMessage($model->getError(), 'error');
+			if(!$model->publish($cid, 1)) $mainframe->enqueueMessage($model->getError(), 'error');
 			else {
-				$this->setRedirect( 'index.php?option='.AWOCOUPON_OPTION.'&view=coupons', JText::_( 'COM_AWOCOUPON_MSG_ITEMS_PUBLISHED') );
+				$cache = &JFactory::getCache('com_awocoupon');
+				$cache->clean();
+				$this->setRedirect( 'index.php?option=com_awocoupon&view=coupons', JText::_( 'COUPONS PUBLISHED') );
 			}
 		}
 	}
 	function unpublishcoupon() {
+		global $mainframe;
+		
 		// Check for request forgeries
 		JRequest::checkToken() or jexit( 'Invalid Token' );
 		
 		$cid 	= JRequest::getVar( 'cid', array(0), 'post', 'array' );
 
 		if (!is_array( $cid ) || count( $cid ) < 1) {
-			JFactory::getApplication()->enqueueMessage(JText::_( 'COM_AWOCOUPON_ERR_SELECT_ITEM' ), 'error');
+			$mainframe->enqueueMessage(JText::_( 'SELECT A COUPON' ), 'error');
 		} else {
 
 			$model = $this->getModel('coupons');
 
-			if(!$model->publish($cid, -1)) JFactory::getApplication()->enqueueMessage($model->getError(), 'error');
+			if(!$model->publish($cid, -1)) $mainframe->enqueueMessage($model->getError(), 'error');
 			else {
-				$this->setRedirect( 'index.php?option='.AWOCOUPON_OPTION.'&view=coupons', JText::_( 'COM_AWOCOUPON_MSG_ITEMS_UNPUBLISHED') );
+				$cache = &JFactory::getCache('com_awocoupon');
+				$cache->clean();
+				$this->setRedirect( 'index.php?option=com_awocoupon&view=coupons', JText::_( 'COUPONS UNPUBLISHED') );
 			}
 		}
 	}
 
-	function publishplugin() {
+	
+	function adduser() { $this->setRedirect('index.php?option=com_awocoupon&view=user'); }
+	function canceluser() { $this->setRedirect('index.php?option=com_awocoupon&view=users'); }
+	function saveuser() { 
+		global $mainframe;
+		
+		// Check for request forgeries
+		JRequest::checkToken() or jexit( 'Invalid Token' );
+
+		//Sanitize
+		$post = JRequest::get( 'post' );
+		$model = $this->getModel('user');
+
+		if ( $model->store($post) ) {
+
+			$cache = &JFactory::getCache('page');
+			$cache->clean();
+
+			$this->setRedirect('index.php?option=com_awocoupon&view=users', JText::_( 'USER SAVED' ));
+		} else {
+			$mainframe->enqueueMessage(JText::_( 'ERROR SAVING USER' ), 'error');
+			return $this->execute('adduser');
+		}
+
+	}
+	function removeuser() {
+		global $mainframe, $option;
 		// Check for request forgeries
 		JRequest::checkToken() or jexit( 'Invalid Token' );
 		
-		$cid 	= JRequest::getVar( 'cid', array(0), 'post', 'array' );
-
+		$cid		= JRequest::getVar( 'cid', array(0), 'post', 'array' );
 		if (!is_array( $cid ) || count( $cid ) < 1) {
-			JFactory::getApplication()->enqueueMessage(JText::_( 'COM_AWOCOUPON_ERR_SELECT_ITEM' ), 'error');
-		} else {
-
-			$model = $this->getModel('installation');
-
-			if(!$model->publish($cid, 1)) JFactory::getApplication()->enqueueMessage($model->getError(), 'error');
-			else {
-				$this->setRedirect( 'index.php?option='.AWOCOUPON_OPTION.'&view=installation', JText::_( 'COM_AWOCOUPON_MSG_ITEMS_PUBLISHED') );
-			}
+			JError::raiseError(500, JText::_( 'SELECT A USER' ) );
 		}
+
+		$model = $this->getModel('users');
+		$coupon_id = $mainframe->getUserStateFromRequest( $option.'.users.id', 	'id', 	JRequest::getVar( 'id' ), 'cmd' );
+
+		$msg = $model->deleteusers($cid);
+		if(!$msg) {
+			$msg = '';
+			JError::raiseError(500, $model->getError());
+		} else {
+			$cache = &JFactory::getCache('com_awocoupon');
+			$cache->clean();
+		}
+
+		//$mainframe->enqueueMessage($msg, 'message');
+		$this->setRedirect( 'index.php?option=com_awocoupon&view=users&tmpl=component',$msg );
 	}
-	function unpublishplugin() {
+
+	
+	function addproduct() { $this->setRedirect('index.php?option=com_awocoupon&view=product'); }
+	function cancelproduct() { $this->setRedirect('index.php?option=com_awocoupon&view=products'); }
+	function saveproduct() { 
+		global $mainframe;
+		
+		// Check for request forgeries
+		JRequest::checkToken() or jexit( 'Invalid Token' );
+
+		//Sanitize
+		$post = JRequest::get( 'post' );
+		$model = $this->getModel('product');
+
+		if ( $model->store($post) ) {
+
+			$cache = &JFactory::getCache('page');
+			$cache->clean();
+
+			$this->setRedirect('index.php?option=com_awocoupon&view=products', JText::_( 'PRODUCT SAVED' ));
+		} else {
+			$mainframe->enqueueMessage(JText::_( 'ERROR SAVING PRODUCT' ), 'error');
+			return $this->execute('addproduct');
+		}
+
+	}
+	function removeproduct() {
+		global $mainframe, $option;
 		// Check for request forgeries
 		JRequest::checkToken() or jexit( 'Invalid Token' );
 		
-		$cid 	= JRequest::getVar( 'cid', array(0), 'post', 'array' );
-
+		$cid		= JRequest::getVar( 'cid', array(0), 'post', 'array' );
 		if (!is_array( $cid ) || count( $cid ) < 1) {
-			JFactory::getApplication()->enqueueMessage(JText::_( 'COM_AWOCOUPON_ERR_SELECT_ITEM' ), 'error');
+			JError::raiseError(500, JText::_( 'SELECT A PRODUCT' ) );
+		}
+
+		$model = $this->getModel('products');
+
+		$msg = $model->deleteproducts($cid);
+		if(!$msg) {
+			$msg = '';
+			JError::raiseError(500, $model->getError());
 		} else {
-
-			$model = $this->getModel('installation');
-
-			if(!$model->publish($cid, 0)) JFactory::getApplication()->enqueueMessage($model->getError(), 'error');
-			else {
-				$this->setRedirect( 'index.php?option='.AWOCOUPON_OPTION.'&view=installation', JText::_( 'COM_AWOCOUPON_MSG_ITEMS_UNPUBLISHED') );
-			}
+			$cache = &JFactory::getCache('com_awocoupon');
+			$cache->clean();
 		}
+
+		//$mainframe->enqueueMessage($msg, 'message');
+		$this->setRedirect( 'index.php?option=com_awocoupon&view=products',$msg );
 	}
-	
-	function ajax_elements() {
-		$db = JFactory::getDBO();
-		$q = JRequest::getVar( 'term' );
-		if(empty($q) || strlen($q)<2) exit;
 
-		if(!defined('VMLANG')) {
-			if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR.'/components/com_virtuemart/helpers/config.php');
-			VmConfig::loadConfig();
-		}
-
-		$type = JRequest::getVar( 'type' );
-		$q = $db->Quote( awolibrary::dbescape( trim(JString::strtolower( $q ) ), true ).'%', false );
-		
-		$result = array();
-		switch($type) {
-			case 'product':
-				$sql = 'SELECT p.virtuemart_product_id AS id,CONCAT(lang.product_name," (",p.product_sku,")") AS label 
-						  FROM #__virtuemart_products p
-						  JOIN `#__virtuemart_products_'.VMLANG.'` as lang using (`virtuemart_product_id`)
-						 WHERE p.published=1 AND CONCAT(lang.product_name," (",p.product_sku,")") LIKE '.$q.' ORDER BY label,p.product_sku LIMIT 25';
-				break;
-			case 'category':
-				$sql = 'SELECT c.virtuemart_category_id AS id,lang.category_name AS label
-						  FROM #__virtuemart_categories c
-						  JOIN `#__virtuemart_categories_'.VMLANG.'` as lang using (`virtuemart_category_id`)
-						 WHERE c.published=1 AND lang.category_name LIKE '.$q.' ORDER BY lang.category_name,c.virtuemart_category_id LIMIT 25';
-				break;
-			case 'user':
-				$sql = 'SELECT id,username as label FROM #__users WHERE username LIKE '.$q.' ORDER BY username LIMIT 25';
-				break;
-		}
-		if(!empty($sql)) {
-			$db->setQuery($sql);
-			foreach($db->loadObjectList() as $row) array_push($result, array("id"=>$row->id, "label"=>$row->label, "value" => strip_tags($row->label)));
-		}
-
-		echo json_encode($result);
-		exit;
-	}
-	function ajax_elements_all() {
-		$db = JFactory::getDBO();
-
-		if(!defined('VMLANG')) {
-			if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR.'/components/com_virtuemart/helpers/config.php');
-			VmConfig::loadConfig();
-		}
-
-		$type = JRequest::getVar( 'type' );
-		
-		$result = array();
-		switch($type) {
-			case 'product':
-				$sql = 'SELECT p.virtuemart_product_id AS id,CONCAT(lang.product_name," (",p.product_sku,")") AS label 
-						  FROM #__virtuemart_products p
-						  JOIN `#__virtuemart_products_'.VMLANG.'` as lang using (`virtuemart_product_id`)
-						 WHERE p.published=1 ORDER BY label,p.product_sku';
-				break;
-			case 'category':
-				$sql = 'SELECT c.virtuemart_category_id AS id,lang.category_name AS label
-						  FROM #__virtuemart_categories c
-						  JOIN `#__virtuemart_categories_'.VMLANG.'` as lang using (`virtuemart_category_id`)
-						 WHERE c.published=1 ORDER BY lang.category_name,c.virtuemart_category_id';
-				break;
-			case 'user':
-				$sql = 'SELECT id,username as label FROM #__users ORDER BY username,id';
-				break;
-		}
-		if(!empty($sql)) {
-			$db->setQuery($sql);
-			foreach($db->loadObjectList() as $row) array_push($result, array("id"=>$row->id, "label"=>$row->label, "value" => strip_tags($row->label)));
-		}
-
-		echo json_encode($result);
-		exit;
-	}
-	
 }

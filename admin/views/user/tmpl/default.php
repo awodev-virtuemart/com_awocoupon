@@ -10,27 +10,29 @@
 defined('_JEXEC') or die('Restricted access'); 
 //window.top.setTimeout('window.parent.document.getElementById(\'sbox-window\').close()', 700);
 ?>
-<script>
-window.parent.document.getElementById('ur<?php echo $this->row->id; ?>').innerHTML = '<?php echo empty($this->row->users) ? JText::_( 'ALL' ) : count($this->row->users); ?>';
+
+<script language="javascript" type="text/javascript">
+<!--
+function clearbox(val) {
+	var form = document.adminForm;
+	if(val == 1) form.elements['userlist[]'].selectedIndex = -1;
+	else if(val == 2) form.elements['productlist[]'].selectedIndex = -1;
+}
+//-->
 </script>
 
 
 <fieldset>
 	<div style="float: right">
 		<table class="toolbar"><tr>
-			<td class="button" id="toolbar-new">
-				<a href="#" onclick="javascript: submitbutton('adduser')" class="toolbar">
-				<span class="icon-32-new" title="<?php echo JText::_('NEW'); ?>"></span><?php echo JText::_('NEW'); ?></a>
-			</td>
-			<td class="divider"></td>
-			<td class="button" id="toolbar-delete">
-				<a href="#" onclick="javascript:if(document.adminForm.boxchecked.value==0){alert('<?php echo JText::_('PLEASE MAKE A SELECTION FROM THE LIST TO DELETE'); ?>');}else{  if(confirm('<?php echo JText::_('ARE YOU SURE YOU WANT TO DELETE THE USERS'); ?>')){submitbutton('removeuser');}}" class="toolbar">
-				<span class="icon-32-delete" title="<?php echo JText::_('DELETE'); ?>"></span><?php echo JText::_('DELETE'); ?></a>
+			<td class="button" id="toolbar-save">
+				<a href="#" onclick="javascript: submitbutton('saveuser')" class="toolbar">
+				<span class="icon-32-save" title="<?php echo JText::_('SAVE'); ?>"></span><?php echo JText::_('SAVE'); ?></a>
 			</td>
 			<td class="divider"></td>
 			<td class="button" id="toolbar-cancel">
-				<a href="#" onclick="javascript: window.parent.document.getElementById('sbox-window').close();" class="toolbar">
-				<span class="icon-32-cancel" title="<?php echo JText::_('CLOSE'); ?>"></span><?php echo JText::_('CLOSE'); ?></a>
+				<a href="#" onclick="javascript: submitbutton('canceluser');" class="toolbar">
+				<span class="icon-32-cancel" title="<?php echo JText::_('CANCEL'); ?>"></span><?php echo JText::_('CANCEL'); ?></a>
 			</td>
 			<td class="spacer"></td>
 		</tr></table>
@@ -87,53 +89,25 @@ window.parent.document.getElementById('ur<?php echo $this->row->id; ?>').innerHT
 </fieldset>
 
 
-<fieldset><legend><?php echo JText::_( 'USERS' );?></legend>
 <form action="index.php" method="post" name="adminForm">
 
-	<table class="adminform">
-		<tr>
-			<td width="100%">
-			</td>
-			<td nowrap="nowrap"></td>
-		</tr>
-	</table>
-
-	<table class="adminlist" cellspacing="1">
-	<thead>
-		<tr>
-			<th width="5"><?php echo JText::_( 'NUM' ); ?></th>
-			<th width="5"><input type="checkbox" name="toggle" value="" onClick="checkAll(<?php echo count( $this->row->users ); ?>);" /></th>
-			<th class="title"><?php echo JHTML::_('grid.sort', 'ID', 'uv.user_id', $this->lists['order_Dir'], $this->lists['order'] ); ?></th>
-			<th class="title"><?php echo JHTML::_('grid.sort', 'LAST NAME', 'uv.last_name', $this->lists['order_Dir'], $this->lists['order'] ); ?></th>
-			<th class="title"><?php echo JHTML::_('grid.sort', 'FIRST NAME', 'uv.first_name', $this->lists['order_Dir'], $this->lists['order'] ); ?></th>
-		</tr>
-	</thead>
-	<tfoot><tr><td colspan="10"><?php echo $this->pageNav->getListFooter(); ?></td></tr></tfoot>
-
-	<tbody>
-		<?php
-		
-		foreach ($this->row->users as $i=>$row) :
-		?>
-		<tr class="row<?php echo ($i%2); ?>">
-			<td><?php echo $this->pageNav->getRowOffset( $i ); ?></td>
-			<td width="7"><?php echo JHTML::_('grid.id', $i,$row->user_id ); ?></td>
-			<td align="center"><?php echo $row->user_id; ?></td>
-			<td align="center"><?php echo $row->last_name; ?></td>
-			<td align="center"><?php echo $row->first_name; ?></td>
-		</tr>
+	<fieldset class="adminform" style="width:93%;height:300px;">
+	<legend><?php echo JText::_('USERS'); ?></legend>
+		<select name="userlist[]" class="inputbox" multiple size="7" style="width:100%; height:90%;">
+		<?php foreach($this->userlist as $tmp) : ?>
+			<option value="<?php echo $tmp->user_id; ?>">(<?php echo $tmp->user_id; ?>) <?php echo $tmp->last_name; ?> <?php echo $tmp->first_name; ?></option>
 		<?php endforeach; ?>
-	</tbody>
-
+		</select>
+		<table cellpadding="0" cellspacing="0" width="100%"><tr>
+			<td><i style="color:#777777;"><?php echo JText::_('CTRL SHIFT KEY'); ?></i></td>
+			<td align="right"><input type="button" onclick="clearbox(1)" value="<?php echo JText::_('CLEAR'); ?>" /></td>
+		</tr></table>
+	</fieldset>
 	</table>
 
-	<input type="hidden" name="boxchecked" value="0" />
 	<input type="hidden" name="option" value="com_awocoupon" />
-	<input type="hidden" name="controller" value="coupons" />
-	<input type="hidden" name="view" value="users" />
 	<input type="hidden" name="task" value="" />
-	<input type="hidden" name="filter_order" value="<?php echo $this->lists['order']; ?>" />
-	<input type="hidden" name="filter_order_Dir" value="" />
+	<input type="hidden" name="view" value="users" />
 	<?php echo JHTML::_( 'form.token' ); ?>
+
 </form>
-</fieldset>

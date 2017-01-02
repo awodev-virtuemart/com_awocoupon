@@ -11,23 +11,26 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport( 'joomla.application.component.view' );
 
-class AwoCouponViewAbout extends AwoCouponView {
+class AwoCouponViewAbout extends JView {
 
 	function display( $tpl = null ) {
-		parent::display_beforeload();
-
 		// Load tooltips
 		JHTML::_('behavior.tooltip', '.hasTip');
 
 		//add css to document
-		$document	= JFactory::getDocument();
+		$document	= & JFactory::getDocument();
+		$document->addStyleSheet('components/com_awocoupon/assets/css/style.css');
 
 		//create the toolbar
-		JToolBarHelper::title( JText::_( 'COM_AWOCOUPON_AT_ABOUT' ), 'awocoupon' );
+		JToolBarHelper::title( JText::_( 'ABOUT' ), 'awocoupon' );
 
 		//Retreive version from install file
-		$element = simplexml_load_file(JPATH_ADMINISTRATOR.'/components/com_awocoupon/awocoupon'.(version_compare(JVERSION, '3.0.0', 'ge') ? '_j3':'').'.xml');
-		$version = (string)$element->version;
+		$parser =& JFactory::getXMLParser('Simple');
+		$parser->loadFile( JPATH_ADMINISTRATOR.DS."components".DS."com_awocoupon".DS.'awocoupon.xml' );
+		$doc		=& $parser->document;
+		
+		$element	=& $doc->getElementByPath( 'version' );
+		$version	= $element->data();
 		
 		$this->assign( 'version'	, $version );
 		

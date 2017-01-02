@@ -11,7 +11,7 @@ defined('_JEXEC') or die('Restricted access');
 
 jimport( 'joomla.application.component.view');
 
-class AwoCouponViewUsers extends JView {
+class AwoCouponViewProduct extends JView {
 
 	function display($tpl = null) {
 		global $mainframe, $option;
@@ -22,32 +22,26 @@ class AwoCouponViewUsers extends JView {
 		//create the toolbar
 		JRequest::setVar('tmpl', 'component');
 		$document	= & JFactory::getDocument();
-		$document->setTitle( JText::_('USERS') );
+		$document->setTitle( JText::_('PRODUCTS') );
 		$document->addStyleSheet('components/com_awocoupon/assets/css/style.css');
 		$document->addStyleSheet($templateDir.'/css/template.css');
 		$document->addStyleSheet('templates/system/css/system.css');
 
+
 		//initialise variables
-		$cid 		= JRequest::getVar( 'cid' );
+
 		
 		//get vars
-		$id		= $mainframe->getUserStateFromRequest( $option.'.users.id', 	'id', 	JRequest::getVar( 'id' ), 'cmd' );
-		$filter_order		= $mainframe->getUserStateFromRequest( $option.'.users.filter_order', 	'filter_order', 	'c.coupon_code', 'cmd' );
-		$filter_order_Dir	= $mainframe->getUserStateFromRequest( $option.'.users.filter_order_Dir',	'filter_order_Dir',	'', 'word' );
+		$id		= $mainframe->getUserStateFromRequest( $option.'.products.id', 	'id', 	JRequest::getVar( 'id' ), 'cmd' );
 
 		//Get data from the model
-		$row      	= & $this->get( 'Data');
-		$pageNav 	= & $this->get( 'Pagination' );
+		$row      	= & $this->get( 'Entry');
+		$productlist = & $this->get('ProductList');
 		
-		// table ordering
-		$lists['order_Dir'] = $filter_order_Dir;
-		$lists['order'] = $filter_order;
-
 		//assign data to template
-		$this->assignRef('id'      	, $id);
-		$this->assignRef('lists'      	, $lists);
-		$this->assignRef('row'      	, $row);
-		$this->assignRef('pageNav' 		, $pageNav);
+		$this->assignRef('id'			, $id);
+		$this->assignRef('row'			, $row);
+		$this->assignRef('productlist'	, $productlist);
 
 		parent::display($tpl);
 	}
