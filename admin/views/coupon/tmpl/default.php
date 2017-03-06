@@ -389,9 +389,6 @@ function getjqdd(intype) {
 				<td class="key" nowrap><label><?php echo JText::_( 'COM_AWOCOUPON_CP_PUBLISHED' ); ?></label></td>
 				<td><?php echo $this->lists['published']; ?></td>
 			</tr>
-			<tr><td class="key"><label><?php echo JText::_( 'COM_AWOCOUPON_CP_FUNCTION_TYPE' ); ?></label></td>
-				<td><?php echo JText::_('COM_AWOCOUPON_CP_COUPON'); ?></td>
-			</tr>
 			<tr>
 				<td class="key" nowrap><label><?php echo JText::_( 'COM_AWOCOUPON_CP_PERCENT_AMOUNT' ); ?></label></td>
 				<td><?php echo $this->lists['coupon_value_type']; ?></td>

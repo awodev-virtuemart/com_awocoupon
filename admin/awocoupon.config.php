@@ -6,6 +6,8 @@
  * @Website : http://awodev.com
  **/
 
+defined('_JEXEC') or die('Restricted access');
+
 //Set filepath
 define('com_awocoupon_ASSETS',    				JURI::base().'components/com_awocoupon/assets');
 define('AWOCOUPON',    							'awocoupon_vm');

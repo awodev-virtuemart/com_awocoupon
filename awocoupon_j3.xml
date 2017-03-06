@@ -75,5 +75,10 @@
 		<plugin plugin="awocoupon" group="vmcoupon" />
 		<plugin plugin="awocoupon" group="vmpayment" />
 	</plugins>
+	
+	<updateservers>
+		<!-- Note: No spaces or linebreaks allowed between the server tags -->
+		<server type="extension" name="AwoCoupon Free Updates"><![CDATA[https://raw.githubusercontent.com/awodev-virtuemart/com_awocoupon/master/update.xml]]></server>
+	</updateservers>
 
 </extension>

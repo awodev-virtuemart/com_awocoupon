@@ -1,5 +1,11 @@
 <?php
-// No direct access to this file
+/**
+ * @component AwoCoupon for Virtuemart
+ * @copyright Copyright (C) Seyi Awofadeju - All rights reserved.
+ * @license : GNU/GPL
+ * @Website : http://awodev.com
+ **/
+
 defined('_JEXEC') or die('Restricted access');
   
 class plgVmPaymentAwoCouponInstallerScript {

@@ -1,7 +1,8 @@
 <?php
 /**
- * @component AwoCoupon
+ * @component AwoCoupon for Virtuemart
  * @copyright Copyright (C) Seyi Awofadeju - All rights reserved.
+ * @license : GNU/GPL
  * @Website : http://awodev.com
  **/
 

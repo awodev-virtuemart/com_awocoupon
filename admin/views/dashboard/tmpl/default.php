@@ -38,15 +38,15 @@ defined('_JEXEC') or die('Restricted access');
 			
 			
 			
-		<table class="adminlist" border="0">
-		<tbody>
-		<tr>
-		  	<td align="center" style="border: solid 1px #ccc;">
-			<div style="font-weight:bold;font-size:12px;color:#000000;"><?php echo JText::_('COM_AWOCOUPON_JOOMLA_REVIEW'); ?></div>
-			</td>
-		</tr>
-		</tbody>
-		</table>
+				<table class="adminlist" border="0">
+				<tbody>
+				<tr>
+					<td align="center" style="border: solid 1px #ccc;">
+					<div style="font-weight:bold;font-size:1.1em;color:red;"><?php echo JText::_('COM_AWOCOUPON_JOOMLA_REVIEW'); ?></div>
+					</td>
+				</tr>
+				</tbody>
+				</table>
 
 
 
