@@ -1,4 +1,7 @@
 
+2.0.25
+- Fixed an issue with category/products not showing when you edit a coupon if language set in Virtuemart does not match default language set in Joomla site
+
 2.0.24
 - Implemented Joomla Update System
 

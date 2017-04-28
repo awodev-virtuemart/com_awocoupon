@@ -35,15 +35,16 @@ class AwoCouponModelCoupon extends AwoCouponModel {
 			foreach($tmp as $tmp2) $this->_entry->userlist[$tmp2->user_id] = $tmp2->user_id;
 
 			
-			$lang_params = JComponentHelper::getParams('com_languages');
-			$lang = $lang_params->get('site', 'en-GB'); //use default joomla
-			$lang = strtolower(strtr($lang,'-','_'));
+			if(!defined('VMLANG')) {
+				if (!class_exists( 'VmConfig' )) require(JPATH_ADMINISTRATOR.'/components/com_virtuemart/helpers/config.php');
+				VmConfig::loadConfig();
+			}
 			
 			if($this->_entry->function_type2=='product') {
 				$sql = 'SELECT a.coupon_id,a.product_id AS asset_id,c.product_name AS asset_name
 						  FROM #__'.AWOCOUPON.'_product a
 						  JOIN #__virtuemart_products b ON b.virtuemart_product_id=a.product_id
-						  JOIN #__virtuemart_products_'.$lang.' c USING (virtuemart_product_id)
+						  JOIN #__virtuemart_products_'.VMLANG.' c USING (virtuemart_product_id)
 						 WHERE a.coupon_id IN ('.(int)$this->_id.')';
 				$this->_db->setQuery($sql);
 				$this->_entry->assetlist = $this->_db->loadObjectList();
@@ -52,7 +53,7 @@ class AwoCouponModelCoupon extends AwoCouponModel {
 				$sql = 'SELECT a.coupon_id,a.category_id AS asset_id,c.category_name AS asset_name
 						  FROM #__'.AWOCOUPON.'_category a
 						  JOIN #__virtuemart_categories b ON b.virtuemart_category_id=a.category_id
-						  JOIN #__virtuemart_categories_'.$lang.' c USING (virtuemart_category_id)
+						  JOIN #__virtuemart_categories_'.VMLANG.' c USING (virtuemart_category_id)
 						 WHERE a.coupon_id IN ('.(int)$this->_id.')';
 				$this->_db->setQuery($sql);
 				$this->_entry->assetlist = $this->_db->loadObjectList();
