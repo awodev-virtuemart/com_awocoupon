@@ -48,13 +48,15 @@ class AwoCouponTableCoupons extends JTable {
 
 		$is_start = true;
 		if(!empty($this->startdate)) {
-			if(!preg_match("/^\d{4}\-\d{2}\-\d{2}$/",$this->startdate)) {
+			if(!preg_match("/^\d{4}\-\d{2}\-\d{2} \d{2}:\d{2}:\d{2}$/",$this->startdate)) {
 				$is_start = false;
 				$err[] = JText::_('COM_AWOCOUPON_CP_DATE_START').': '.JText::_('COM_AWOCOUPON_ERR_ENTER_VALID_VALUE');
 			}
 			else {
-				list($Y,$M,$D) = explode('-',$this->startdate);
-				if($Y>2100 || $M>12 || $D>31) {
+				list($dtmp,$ttmp) = explode(' ',$this->startdate);
+				list($Y,$M,$D) = explode('-',$dtmp);
+				list($h,$m,$s) = explode(':',$ttmp);
+				if($Y>2100 || $M>12 || $D>31 || $h>23 || $m>59 || $s>59) {
 					$is_start = false;
 					$err[] = JText::_('COM_AWOCOUPON_CP_DATE_START').': '.JText::_('COM_AWOCOUPON_ERR_ENTER_VALID_VALUE');
 				}
@@ -62,21 +64,29 @@ class AwoCouponTableCoupons extends JTable {
 		} else $is_start = false;
 		$is_end = true;
 		if(!empty($this->expiration)) {
-			if(!preg_match("/^\d{4}\-\d{2}\-\d{2}$/",$this->expiration)) {
+			if(!preg_match("/^\d{4}\-\d{2}\-\d{2} \d{2}:\d{2}:\d{2}$/",$this->expiration)) {
 				$is_end = true;
 				$err[] = JText::_('COM_AWOCOUPON_CP_EXPIRATION').': '.JText::_('COM_AWOCOUPON_ERR_ENTER_VALID_VALUE');
 			}
 			else {
-				list($Y,$M,$D) = explode('-',$this->expiration);
-				if($Y>2100 || $M>12 || $D>31) {
+				list($dtmp,$ttmp) = explode(' ',$this->expiration);
+				list($Y,$M,$D) = explode('-',$dtmp);
+				list($h,$m,$s) = explode(':',$ttmp);
+				if($Y>2100 || $M>12 || $D>31 || $h>23 || $m>59 || $s>59) {
 					$is_end = true;
 					$err[] = JText::_('COM_AWOCOUPON_CP_EXPIRATION').': '.JText::_('COM_AWOCOUPON_ERR_ENTER_VALID_VALUE');
 				}
 			}
 		} else $is_end = false;
 		if($is_start && $is_end) {
-			$c1 = (int)str_replace('-','',$this->startdate);
-			$c2 = (int)str_replace('-','',$this->expiration);
+			list($dtmp,$ttmp) = explode(' ',$this->startdate);
+			list($Y,$M,$D) = explode('-',$dtmp);
+			list($h,$m,$s) = explode(':',$ttmp);
+			$c1 = (int)$Y.$M.$D.'.'.$h.$m.$s;
+			list($dtmp,$ttmp) = explode(' ',$this->expiration);
+			list($Y,$M,$D) = explode('-',$dtmp);
+			list($h,$m,$s) = explode(':',$ttmp);
+			$c2 = (int)$Y.$M.$D.'.'.$h.$m.$s;
 			if($c1>$c2) $err[] = JText::_('COM_AWOCOUPON_CP_DATE_START').'/'.JText::_('COM_AWOCOUPON_CP_EXPIRATION').': '.JText::_('COM_AWOCOUPON_ERR_ENTER_VALID_VALUE');
 		}
 		

@@ -135,7 +135,7 @@ function submitbutton(pressbutton) {
 		if(trim(form.expiration.value)!='') {
 			d = form.expiration.value.substr(0,4)+form.expiration.value.substr(5,2)+form.expiration.value.substr(8,2);
 			d = d*1;
-			if(d < <?php echo date('Ymd'); ?>) {
+			if(d < <?php echo awolibrary::getDate(null,'Ymd'); ?>) {
 				if(!confirm(str_coup_err_confirm_expiration)) is_submit = false;
 			}
 		}
@@ -411,7 +411,7 @@ function getjqdd(intype) {
 				<td><input class="inputbox" type="text" name="min_value" size="30" maxlength="255" value="<?php echo $this->row->min_value; ?>" /></td>
 			</tr>
 			<tr><td class="key"><label><?php echo JText::_( 'COM_AWOCOUPON_CP_DATE_START' ); ?></label></td>
-				<td><?php echo JHTML::calendar($this->row->startdate, 'startdate', 'startdate', '%Y-%m-%d',
+				<td><?php echo JHTML::calendar(substr($this->row->startdate,0,10), 'startdate', 'startdate', '%Y-%m-%d',
 									array('size'=>'12',
 									'maxlength'=>'10',
 								));
@@ -420,7 +420,7 @@ function getjqdd(intype) {
 				</td>
 			</tr>
 			<tr><td class="key"><label><?php echo JText::_( 'COM_AWOCOUPON_CP_EXPIRATION' ); ?></label></td>
-				<td><?php echo JHTML::calendar($this->row->expiration, 'expiration', 'expiration', '%Y-%m-%d',
+				<td><?php echo JHTML::calendar(substr($this->row->expiration,0,10), 'expiration', 'expiration', '%Y-%m-%d',
 									array('size'=>'12',
 									'maxlength'=>'10',
 								));

@@ -103,8 +103,8 @@ defined('_JEXEC') or die('Restricted access'); ?>
 				</a>
 				<?php } else echo JText::_( 'COM_AWOCOUPON_GBL_ALL' ); ?>&nbsp;
 			</td>
-			<td align="center"><?php echo str_replace(' ','<br />',$row->startdate); ?>&nbsp;</td>
-			<td align="center"><?php echo str_replace(' ','<br />',$row->expiration); ?>&nbsp;</td>
+			<td align="center"><?php echo empty($row->startdate) ? '' : str_replace(' ','<br />',awolibrary::getDate($row->startdate,'Y-m-d')); ?>&nbsp;</td>
+			<td align="center"><?php echo empty($row->expiration) ? '' : str_replace(' ','<br />',awolibrary::getDate($row->expiration,'Y-m-d')); ?>&nbsp;</td>
 			<td align="center"><?php echo '<img src="'.$img.'" width="16" height="16" class="hand" border="0" alt="'.$alt.'" title="'.$alt.'" '.$imgjs.'/>'; ?></td>
 			<td align="center"><?php echo $row->id; ?></td>
 		</tr>

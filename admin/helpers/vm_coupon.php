@@ -171,9 +171,7 @@ class vm_coupon {
 		if(empty($this->vmcoupon_code) && !empty($awosess['coupon_code_db'])) $this->vmcoupon_code = $awosess['coupon_code_db'];
 		
 		//$current_date = date('Y-m-d');
-		$current_date = version_compare( JVERSION, '1.6.0', 'ge' ) 
-							? JFactory::getDate('now',JFactory::getConfig()->get('offset'))->format('Y-m-d',true)
-							: JFactory::getDate(time(),JFactory::getConfig()->getValue ( 'offset' )*-1)->toFormat('%Y-%m-%d');
+		$current_date = awolibrary::getDate(null,'Y-m-d H:i:s','utc2utc');
 		$sql = 'SELECT id,coupon_code,num_of_uses,coupon_value_type,coupon_value,min_value,discount_type,function_type,function_type2
 				  FROM #__'.AWOCOUPON.' 
 				 WHERE published=1

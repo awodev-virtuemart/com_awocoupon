@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS #__awocoupon_vm (
 	`discount_type` enum('specific','overall') NOT NULL DEFAULT 'overall',
 	`function_type` enum('coupon','giftcert') NOT NULL DEFAULT 'coupon',
 	`function_type2` enum('product','category'),
-	`startdate` DATE,
-	`expiration` DATE,
+	`startdate` DATETIME DEFAULT NULL,
+	`expiration` DATETIME DEFAULT NULL,
 	`published` TINYINT NOT NULL DEFAULT 1,
 	PRIMARY KEY  (`id`)
 );

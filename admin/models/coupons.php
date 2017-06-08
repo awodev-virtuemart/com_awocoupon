@@ -103,7 +103,7 @@ class AwoCouponModelCoupons extends AwoCouponModel {
 
 		if ( $filter_state ) {
 			if($filter_state==1) {
-				$current_date = date('Y-m-d H:i:s');
+				$current_date = awolibrary::getDate(null,'Y-m-d H:i:s','utc2utc');
 				$where[] = 'c.published=1 
 				   AND ( ((c.startdate IS NULL OR c.startdate="") 	AND (c.expiration IS NULL OR c.expiration="")) OR
 						 ((c.expiration IS NULL OR c.expiration="") AND c.startdate<="'.$current_date.'") OR
@@ -113,7 +113,7 @@ class AwoCouponModelCoupons extends AwoCouponModel {
 				'; 
 			}
 			elseif($filter_state==-1) {
-				$current_date = date('Y-m-d H:i:s');
+				$current_date = awolibrary::getDate(null,'Y-m-d H:i:s','utc2utc');
 				$where[] = '(c.published=-1 OR c.startdate>"'.$current_date.'" OR c.expiration<"'.$current_date.'")';
 			}
 			else $where[] = 'c.published='.(int)$filter_state;

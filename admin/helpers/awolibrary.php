@@ -21,6 +21,46 @@ class awoLibrary {
 		return $value;
 	}
 
+	public static function getDate($date=null, $format=null, $type='utc2loc') {
+		
+		if(version_compare(JVERSION,'1.6.0','ge')) {
+			if(empty($date)) $date = 'now';
+		}
+		else {
+			if(empty($date)) $date = time();
+			$d1 = stristr(PHP_OS,"win") ? '%#d' : '%e';
+			$format = str_replace(
+				array( 'M',  'Y', 'm', 'n', 'd', 'j', 'H', 'i', 's' ,'F', 'y', 'l', 'D',),
+				array('%b', '%Y','%m','%m','%d', $d1,'%H','%M','%S','%B','%y','%A','%a',),
+				$format
+			);
+		}
+		
+		if(is_numeric($date)) $date = gmdate('c', $date);
+
+		if(in_array($type, array('utc2loc','utc2utc'))) {
+			if($type=='utc2loc') {
+				$tz = true;
+				$offset = null;
+			}
+			elseif($type=='utc2utc') {
+				$tz = null;
+				$offset = 0;
+			}
+			return version_compare( JVERSION, '1.6.0', 'ge' )
+				? JHTML::_('date',$date,$format,$tz)
+				: JHTML::_('date',strtotime($date),$format,$offset)
+			;
+		}
+		elseif($type=='loc2utc') {
+			$local = false;
+			return version_compare( JVERSION, '1.6.0', 'ge' ) 
+				? JFactory::getDate($date,JFactory::getConfig()->get('offset'))->format($format,$local)
+				: JFactory::getDate($date,JFactory::getConfig()->getValue ( 'offset' )*1)->toFormat($format)
+			;
+		}
+	}
+
 }
 
 

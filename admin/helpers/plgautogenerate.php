@@ -36,7 +36,9 @@ class awoAutoGenerate  {
 
 		$db_expiration = !empty($crow->expiration) ? '"'.$crow->expiration.'"' : 'NULL';
 		if(!empty($expiration) && ctype_digit($expiration)) {
-			$db_expiration = '"'.date('Y-m-d',time()+(86400*(int)$expiration)).'"';
+			$exp_calc = date('Y-m-d 23:59:59',time()+(86400*(int)$expiration));
+			$exp_calc = awolibrary::getDate($exp_calc, 'Y-m-d H:i:s', 'loc2utc');
+			$db_expiration = '"'.$exp_calc.'"';
 		}
 
 		$sql = 'INSERT INTO #__'.AWOCOUPON.' ( coupon_code,num_of_uses,coupon_value_type,coupon_value,min_value,discount_type,function_type,function_type2,expiration,published )

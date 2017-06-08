@@ -52,6 +52,7 @@ class com_awocouponInstallerScript {
 
 class awocouponInstall {
 
+	var $version_old = 0;
 	var $is_update = false;
 	var $logger = array();
 	var $is_debug = false;
@@ -60,15 +61,24 @@ class awocouponInstall {
 	
 
 	public function __construct($type) {
+		
 		if($type == 'install') {
-			$xml_file = JPATH_ADMINISTRATOR.'/components/com_awocoupon/awocoupon.xml';
-			if(!file_exists($xml_file)) echo '<div><b>Database Tables Installation: <font color="green">Successful</font></b></div>';
+			
+			$found_xml_file = '';
+			if(file_exists(JPATH_ADMINISTRATOR.'/components/com_awocoupon/awocoupon_j3.xml')) $found_xml_file = 'awocoupon_j3.xml';
+			elseif(file_exists(JPATH_ADMINISTRATOR.'/components/com_awocoupon/awocoupon.xml')) $found_xml_file = 'awocoupon.xml';
+			if(empty($found_xml_file)) echo '<div><b>Database Tables Installation: <font color="green">Successful</font></b></div>';
 			else {
-				
 				$this->is_update = true;
-			}
 
+				$contents = file_get_contents(JPATH_ADMINISTRATOR.'/components/com_awocoupon/'.$found_xml_file);
+				preg_match('/\<version\>(.*?)\<\/version\>/i',$contents,$matches);
+					
+				$this->version_old = $matches[1];
+			}
+			
 			require_once JPATH_ADMINISTRATOR.'/components/com_awocoupon/awocoupon.config.php';
+			
 		}
 		elseif($type=='uninstall') {
 			
@@ -127,12 +137,21 @@ class awocouponInstall {
 	}
 
 	function install_tableupdates() {
+		if(!$this->is_update) return;
 		$dbupgrades = array();
+		
+		
 		if(!$this->_column_exists('#__'.AWOCOUPON,'function_type2')) {
 		// upgrade to 2.0.9
 			$dbupgrades[] = "ALTER TABLE #__".AWOCOUPON." ADD COLUMN `function_type2` enum('product','category') AFTER `function_type`;";
 			$dbupgrades[] = "UPDATE #__".AWOCOUPON." SET `function_type2`='product';";
 		}
+		
+		if (version_compare('2.0.26', $this->version_old) == 1) {
+			$dbupgrades[] = "ALTER TABLE #__".AWOCOUPON." MODIFY `startdate` DATETIME;";
+			$dbupgrades[] = "ALTER TABLE #__".AWOCOUPON." MODIFY `expiration` DATETIME;";
+		}
+
 	
 		if(!empty($dbupgrades)) {
 			$db			= JFactory::getDBO();

@@ -28,6 +28,9 @@ class AwoCouponModelCoupon extends AwoCouponModel {
 				$this->_entry->num_of_uses_type = ($this->_entry->function_type == 'giftcert') ? 'total' : 'per_user';
 			}
 			else $this->_entry->num_of_uses = '';
+			
+			if(!empty($this->_entry->startdate)) $this->_entry->startdate = awolibrary::getDate($this->_entry->startdate,'Y-m-d');
+			if(!empty($this->_entry->expiration)) $this->_entry->expiration = awolibrary::getDate($this->_entry->expiration,'Y-m-d');
 
 			$sql = 'SELECT user_id FROM #__'.AWOCOUPON.'_user WHERE coupon_id='.$this->_id;
 			$this->_db->setQuery($sql);
@@ -107,8 +110,8 @@ class AwoCouponModelCoupon extends AwoCouponModel {
 
 	function store($data) {
 
-		if(empty($data['startdate'])) $data['startdate'] = null;
-		if(empty($data['expiration'])) $data['expiration'] = null;
+		$data['startdate'] = !empty($data['startdate']) ? awolibrary::getDate($data['startdate'].' 00:00:00', 'Y-m-d H:i:s', 'loc2utc') : null;
+		$data['expiration'] = !empty($data['expiration']) ? awolibrary::getDate($data['expiration'].' 23:59:59', 'Y-m-d H:i:s', 'loc2utc') : null;
 
 		$errors = '';
 		if(!empty($data['num_of_uses_type']) && $data['num_of_uses_type']!='total' && $data['num_of_uses_type']!='per_user') $errors .= '<br>'.JText::_('COM_AWOCOUPON_CP_NUMBER_USES_TYPE').': '.JText::_('COM_AWOCOUPON_ERR_ENTER_VALID_VALUE');
@@ -127,7 +130,6 @@ class AwoCouponModelCoupon extends AwoCouponModel {
 		$row 		= JTable::getInstance('coupons', 'AwoCouponTable');
 		$user		= JFactory::getUser();
 		$details	= JRequest::getVar( 'details', array(), 'post', 'array');
-		$nullDate	= $this->_db->getNullDate();
 		
 		// bind it to the table
 		if (!$row->bind($data)) {

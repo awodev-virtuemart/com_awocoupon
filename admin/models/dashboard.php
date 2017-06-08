@@ -28,7 +28,7 @@ class AwoCouponModelDashboard extends AwoCouponModel {
  		/*
 		* Get total number of approved entries
 		*/
-		$current_date = date('Y-m-d H:i:s');
+		$current_date = awolibrary::getDate(null,'Y-m-d H:i:s','utc2utc');
 		$sql = 'SELECT count(id) 
 				  FROM #__'.AWOCOUPON.' 
 				 WHERE published=1
