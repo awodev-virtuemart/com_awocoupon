@@ -11,7 +11,7 @@ defined('JPATH_BASE') or die();
 
 class awoAutoGenerate  {
 
-	function getCouponTemplates() {
+	public static function getCouponTemplates() {
 		require_once JPATH_ADMINISTRATOR.'/components/com_awocoupon/awocoupon.config.php';
 		$db = JFactory::getDBO();
 		$sql = 'SELECT id,coupon_code FROM #__'.AWOCOUPON.' ORDER BY coupon_code,id';
@@ -19,7 +19,7 @@ class awoAutoGenerate  {
 		return $db->loadObjectList();
 	}
 	
-	function generateCoupon($coupon_id,$coupon_code=null,$expiration=null,$override_user=null) {
+	public static function generateCoupon($coupon_id,$coupon_code=null,$expiration=null,$override_user=null) {
 		require_once JPATH_ADMINISTRATOR.'/components/com_awocoupon/awocoupon.config.php';
 		$db = JFactory::getDBO();
 		$coupon_id = (int)$coupon_id;
@@ -67,13 +67,13 @@ class awoAutoGenerate  {
 		awoAutoGenerate::populateTable(AWOCOUPON.'_product','product_id',$coupon_id,$gen_coupon_id);
 		awoAutoGenerate::populateTable(AWOCOUPON.'_category','category_id',$coupon_id,$gen_coupon_id);
 		
-		$obj = null;
+		$obj = new stdClass();
 		$obj->coupon_id = $gen_coupon_id;
 		$obj->coupon_code = $coupon_code;
 		return $obj;
 	}
 	
-	private function populateTable($table,$column,$coupon_id,$gen_coupon_id) {
+	private static function populateTable($table,$column,$coupon_id,$gen_coupon_id) {
 		$db = JFactory::getDBO();
 		$insert_str = '';
 
@@ -89,12 +89,12 @@ class awoAutoGenerate  {
 		
 	}
 	
-	private function generateCouponCode() {
+	private static function generateCouponCode() {
 		$salt = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 		do { $coupon_code = awoAutoGenerate::randomCode(rand(8,12),$salt); } while (awoAutoGenerate::isCodeUsed($coupon_code));
 		return $coupon_code;
 	}
-	private function isCodeUsed($code) {
+	private static function isCodeUsed($code) {
 		$db = JFactory::getDBO();
 			
 		$sql = 'SELECT id FROM #__'.AWOCOUPON.' WHERE coupon_code="'.$code.'"';
@@ -104,7 +104,7 @@ class awoAutoGenerate  {
 		if(empty($id)) return false;
 		return true;
 	}
-	private function randomCode($length,$chars){
+	private static function randomCode($length,$chars){
 		$rand_id='';
 		$char_length = strlen($chars);
 		if($length>0) { for($i=1; $i<=$length; $i++) { $rand_id .= $chars[mt_rand(0, $char_length-1)]; } }

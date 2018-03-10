@@ -32,13 +32,6 @@ class vm_coupon {
 		if(!class_exists('VirtueMartCart')) require(JPATH_VM_SITE.'/helpers/cart.php');
 		$this->vmcart = VirtueMartCart::getCart(false);
 		
-		$vmcart_class_vars = get_class_vars(get_class($this->vmcart));
-		if(isset($vmcart_class_vars['_triesValidateCoupon']))
-		{ // disable virtuemart coupon re-try limit of 8
-			$this->vmcart->_triesValidateCoupon = array();
-			$this->vmcart->setCartIntoSession();
-		}
-		
 	  	$this->session = JFactory::getSession();
 
 
@@ -136,14 +129,6 @@ class vm_coupon {
 		&& empty($this->vmcart->products)
 		&& !empty($this->vmcart->cartProductsData)
 		) return ; // the cart prices object has not yet been initialized
-
-		
-		$vmcart_class_vars = get_class_vars(get_class($this->vmcart));
-		if(isset($vmcart_class_vars['_triesValidateCoupon']))
-		{ // disable virtuemart coupon re-try limit of 8
-			$this->vmcart->_triesValidateCoupon = array();
-			$this->vmcart->setCartIntoSession();
-		}
 
 		$db = JFactory::getDBO();	
 		if (version_compare($this->vmversion, '2.9.8', '>=') && $this->vmcoupon_code==JText::_('COM_VIRTUEMART_COUPON_CODE_CHANGE')) $this->vmcoupon_code = '';

@@ -1,4 +1,7 @@
 
+2.0.27
+- Updated code to use virtuemart _triesValidateCoupon, helps with security
+
 2.0.26
 - Fixed date issues with timezones and display
 
