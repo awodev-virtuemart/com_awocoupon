@@ -160,10 +160,10 @@ class vm_coupon {
 		$sql = 'SELECT id,coupon_code,num_of_uses,coupon_value_type,coupon_value,min_value,discount_type,function_type,function_type2
 				  FROM #__'.AWOCOUPON.' 
 				 WHERE published=1
-				   AND ( ((startdate IS NULL OR startdate="") 	AND (expiration IS NULL OR expiration="")) OR
-						 ((expiration IS NULL OR expiration="") AND startdate<="'.$current_date.'") OR
-						 ((startdate IS NULL OR startdate="") 	AND expiration>="'.$current_date.'") OR
-						 (startdate<="'.$current_date.'"		AND expiration>="'.$current_date.'")
+				   AND ( (startdate IS NULL 				AND expiration IS NULL) OR
+						 (expiration IS NULL 				AND startdate<="'.$current_date.'") OR
+						 (startdate IS NULL 				AND expiration>="'.$current_date.'") OR
+						 (startdate<="'.$current_date.'"	AND expiration>="'.$current_date.'")
 					   )
 				   AND coupon_code='.$db->Quote( awolibrary::dbescape($this->vmcoupon_code)).'';
 		$db->setQuery( $sql );

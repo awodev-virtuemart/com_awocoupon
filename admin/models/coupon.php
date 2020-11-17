@@ -110,6 +110,12 @@ class AwoCouponModelCoupon extends AwoCouponModel {
 
 	function store($data) {
 
+		if ( $data['startdate'] == '0000-00-00 00:00:00' || $date['startdate'] == '0000-00-00' ) {
+			$data['startdate'] = '';
+		}
+		if ( $data['expiration'] == '0000-00-00 00:00:00' || $date['expiration'] == '0000-00-00' ) {
+			$data['expiration'] = '';
+		}
 		$data['startdate'] = !empty($data['startdate']) ? awolibrary::getDate($data['startdate'].' 00:00:00', 'Y-m-d H:i:s', 'loc2utc') : null;
 		$data['expiration'] = !empty($data['expiration']) ? awolibrary::getDate($data['expiration'].' 23:59:59', 'Y-m-d H:i:s', 'loc2utc') : null;
 

@@ -1,4 +1,7 @@
 
+2.0.28
+- Fix datetime issues for mysql strict mode
+
 2.0.27
 - Updated code to use virtuemart _triesValidateCoupon, helps with security
 
