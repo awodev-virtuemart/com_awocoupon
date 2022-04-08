@@ -124,7 +124,7 @@ class awocouponInstall {
 			if (count($queries) != 0) {
 				foreach ($queries as $query) {
 					$query = trim($query);
-					if ($query != '' && $query{0} != '#') {
+					if ($query != '' && substr( $query, 0, 1 ) !== '#' ) {
 						$db->setQuery($query);
 						if (!$db->query()) {
 							JError::raiseWarning(1, JText::sprintf('JLIB_INSTALLER_ERROR_SQL_ERROR', $db->stderr(true)));
@@ -215,7 +215,7 @@ class awocouponInstall {
 		if(version_compare( JVERSION, '1.6.0', 'ge' )) {
 			$plugins = $manifest->xpath('plugins/plugin');
 			foreach($plugins as $plugin){
-				$plugin_attributes = current($plugin);
+				$plugin_attributes = current( (array) $plugin);
 				if(empty($plugin_attributes['plugin'])) continue;
 				
 				$pname = $plugin_attributes['plugin'];
@@ -223,7 +223,6 @@ class awocouponInstall {
 				$path = $src.'/plugins/'.$pgroup;
 				$installer = new JInstaller;
 				$result = $installer->install($path);
-				$status->plugins[] = array('name'=>$pname,'group'=>$pgroup, 'result'=>$result);
 				$db->setQuery('UPDATE #__extensions SET enabled=1 WHERE type="plugin" AND element='.$db->Quote($pname).' AND folder='.$db->Quote($pgroup));
 				$db->query();
 				$is_success = true;
@@ -238,8 +237,6 @@ class awocouponInstall {
 					$path = $src.DS.'plugins'.DS.$pgroup;
 					$installer = new JInstaller;
 					$result = $installer->install($path);
-					$status->plugins[] = array('name'=>$pname,'group'=>$pgroup, 'result'=>$result);
-
 					$db->setQuery('UPDATE #__plugins SET published=1 WHERE element='.$db->Quote($pname).' AND folder='.$db->Quote($pgroup));
 					$db->query();
 					$is_success = true;

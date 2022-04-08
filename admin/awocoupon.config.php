@@ -9,10 +9,11 @@
 defined('_JEXEC') or die('Restricted access');
 
 //Set filepath
-define('com_awocoupon_ASSETS',    				JURI::base().'components/com_awocoupon/assets');
-define('AWOCOUPON',    							'awocoupon_vm');
-define('AWOCOUPON_OPTION',    					'com_awocoupon');
-
+if ( ! defined( 'com_awocoupon_ASSETS' ) ) {
+	define('com_awocoupon_ASSETS',    				JURI::base().'components/com_awocoupon/assets');
+	define('AWOCOUPON',    							'awocoupon_vm');
+	define('AWOCOUPON_OPTION',    					'com_awocoupon');
+}
 //default values
 
 //variables
