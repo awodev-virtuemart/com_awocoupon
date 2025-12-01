@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<install version="1.5" type="plugin" group="vmcoupon" method="upgrade" >	
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" version="2.5" method="upgrade" group="vmcoupon">
 	<name>VMCoupon - AwoCoupon</name>
 	<creationDate>June 2011</creationDate>
 	<author>Seyi Awofadeju</author>
-	<copyright>(C) 2011 Seyi Awofadeju - All rights reserved.</copyright>
+	<copyright>Copyright (C) Seyi Awofadeju - All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>dev@awofadeju.com</authorEmail>
 	<authorUrl>http://awodev.com</authorUrl>
@@ -12,4 +12,4 @@
 	<files>
 		<filename plugin="awocoupon">awocoupon.php</filename>
 	</files>
-</install>
+</extension>

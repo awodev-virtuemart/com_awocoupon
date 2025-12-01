@@ -1,4 +1,7 @@
 
+4.0.1
+- This version requires Joomla 4.x and up.  For a lower version of Joomla use 2.0.29.
+
 2.0.29
 - Fix for PHP 8.x
 

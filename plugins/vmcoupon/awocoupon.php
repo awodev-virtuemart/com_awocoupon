@@ -6,71 +6,112 @@
  * @Website : http://awodev.com
  **/
 
-if( ! defined( '_VALID_MOS' ) && ! defined( '_JEXEC' ) ) die( 'Direct Access to ' . basename( __FILE__ ) . ' is not allowed.' ) ;
+defined( '_JEXEC' ) or die;
 
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Factory as JFactory;
+use Joomla\CMS\Router\Route as JRoute;
+use AwoDev\Component\AwoCoupon\Administrator\Helper\DiscountHelper;
 
-class plgVmCouponAwoCoupon extends JPlugin {
+class plgVmCouponAwoCoupon extends CMSPlugin {
 
-	public function __construct(& $subject, $config){
+	public function __construct(&$subject, $config) {
 		parent::__construct($subject, $config);
+
+		if ( method_exists( $this, 'registerLegacyListener' ) ) {
+			$this->registerLegacyListener( 'plgVmValidateCouponCode' );
+			$this->registerLegacyListener( 'plgVmCouponInUse' );
+			$this->registerLegacyListener( 'plgVmRemoveCoupon' );
+			$this->registerLegacyListener( 'plgVmCouponHandler' );
+			$this->registerLegacyListener( 'plgVmUpdateTotals' );
+		}
 	}
 
 	public function onAfterDispatch() {
-		$app = JFactory::getApplication();
-		if ($app->isAdmin()) return; 
-	  
-		$option = JRequest::getCmd('option'); 
-		if($option!='com_virtuemart') return;
-		
-		$task1 = JRequest::getCmd('task');
-		$task2 = JRequest::getCmd('task2');
-		if($task1!='deletecoupons' && $task2!='deletecoupons') return;
-				
-		$awo_file = JPATH_ADMINISTRATOR.'/components/com_awocoupon/helpers/vm_coupon.php';
-		if(!file_exists($awo_file)) return;
-		
-		if(!class_exists('vm_coupon')) require $awo_file;
-		vm_coupon::delete_code_from_cart();
-		
-		$app->redirect('index.php?option=com_virtuemart&view=cart&Itemid='.JRequest::getInt('Itemid'));
+		if ( ! class_exists( DiscountHelper::class ) ) {
+			return;
+		}
+
+		if ( JFactory::getApplication()->isClient( 'administrator' ) ) {
+			return;
+		}			
+
+		$option = JFactory::getApplication()->input->get( 'option' ); 
+		if ( $option != 'com_virtuemart' ) {
+			return;
+		}
+
+		$this->check_coupon_new();
+		$this->check_coupon_delete();
 		
 		return;
-		
 	}
 
-	function plgVmValidateCouponCode($_code,$_billTotal) {
-		$awo_file = JPATH_ADMINISTRATOR.'/components/com_awocoupon/helpers/vm_coupon.php';
-		if(!file_exists($awo_file)) return null;
-		
-		if(!class_exists('vm_coupon')) require $awo_file;
-		$vm_coupon = new vm_coupon();
-		return $vm_coupon->vm_ValidateCouponCode($_code);
+	public function plgVmValidateCouponCode( $_code, $_billTotal ) {
+		if ( ! class_exists( DiscountHelper::class ) ) {
+			return null;
+		}
+		return DiscountHelper::instance()->validating( $_code );
 	}
 
-	function plgVmRemoveCoupon($_code,$_force) {
-		return $this->plgVmCouponInUse($_code);
+	public function plgVmRemoveCoupon( $_code, $_force ) {
+		if ( ! class_exists( DiscountHelper::class ) ) {
+			return null;
+		}
+		return DiscountHelper::instance()->remove_coupon_code( $_code );
 	}
-	
-	
-	function plgVmCouponInUse($_code) {
-	
-		$awo_file = JPATH_ADMINISTRATOR.'/components/com_awocoupon/helpers/vm_coupon.php';
-		if( ! file_exists($awo_file)) return null;
-				
-		if(!class_exists('vm_coupon')) require $awo_file;
-		return vm_coupon::remove_coupon_code($_code);
-		
+
+	public function plgVmCouponInUse( $_code ) {
+		if ( ! class_exists( DiscountHelper::class ) ) {
+			return null;
+		}
+		$order_id = isset( $_REQUEST['virtuemart_order_id'] ) ? $_REQUEST['virtuemart_order_id'] : 0;
+		return DiscountHelper::instance()->order_new( $order_id );
 	}
-	
-	
-	function plgVmCouponHandler($_code, & $_cartData, & $_cartPrices) {
-		$awo_file = JPATH_ADMINISTRATOR.'/components/com_awocoupon/helpers/vm_coupon.php';
-		if( ! file_exists($awo_file)) return null;
-			
-		if(!class_exists('vm_coupon')) require $awo_file;
-		return vm_coupon::process_coupon_code($_code, $_cartData, $_cartPrices );
+
+	public function plgVmCouponHandler( $_code, & $_cartData, & $_cartPrices ) {
+		if ( ! class_exists( DiscountHelper::class ) ) {
+			return null;
+		}
+		return DiscountHelper::instance()->process_coupon_code( $_code, $_cartData, $_cartPrices );
 	}
-	
+
+	public function plgVmUpdateTotals( & $_cartData, & $_cartPrices ) {
+		if ( ! class_exists( DiscountHelper::class ) ) {
+			return null;
+		}
+		return DiscountHelper::instance()->cart_calculate_totals( $_cartData, $_cartPrices );
+	}
+
+
+	private function check_coupon_new() {
+		if ( version_compare( DiscountHelper::instance()->vmversion, '4.6.0', '<' ) ) {
+			return;
+		}
+		$task = JFactory::getApplication()->input->get( 'task' ); 
+		$coupon_code = JFactory::getApplication()->input->get( 'coupon_code' ); 
+		if ( $task != 'updatecart' || empty( $coupon_code ) ) {
+			return;
+		}
+
+		DiscountHelper::instance()->setCouponCode( $coupon_code );
+		JFactory::getApplication()->redirect( JRoute::_( 'index.php?option=com_virtuemart&view=cart&Itemid=' . (int) JFactory::getApplication()->input->get( 'Itemid' ) ) );
+	}
+
+	private function check_coupon_delete() {
+		$task1 = JFactory::getApplication()->input->get( 'task' ); 
+		$task2 = JFactory::getApplication()->input->get( 'task2' ); 
+		if ( $task1 != 'deletecoupons' && $task2 != 'deletecoupons' ) {
+			return;
+		}
+
+		DiscountHelper::instance()->delete_code_from_cart();
+		JFactory::getApplication()->redirect( JRoute::_( 'index.php?option=com_virtuemart&view=cart&Itemid=' . (int) JFactory::getApplication()->input->get( 'Itemid' ) ) );
+	}
+
+
+
+
+
 }
 
-// No closing tag

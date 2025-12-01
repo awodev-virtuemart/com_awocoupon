@@ -8,31 +8,45 @@
 
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-if (!class_exists ('vmPSPlugin'))  require(JPATH_VM_PLUGINS . DS . 'vmpsplugin.php');
+use Joomla\CMS\Factory as JFactory;
+use AwoDev\Component\AwoCoupon\Administrator\Helper\DiscountHelper;
+
+if ( ! class_exists( 'vmPSPlugin' ) ) {
+	require JPATH_VM_PLUGINS . '/vmpsplugin.php';
+}
 
 class plgVmPaymentAwoCoupon extends vmPSPlugin {
 
-	public function __construct(& $subject, $config) { parent::__construct ($subject, $config); }
-
-	
-	public function plgVmgetPaymentCurrency($virtuemart_paymentmethod_id, &$paymentCurrency){
-		$awo_file = JPATH_ADMINISTRATOR.'/components/com_awocoupon/helpers/vm_coupon.php';
-		if(file_exists($awo_file)) {
-			if(!class_exists('VirtueMartCart')) require JPATH_ROOT.'/components/com_virtuemart/helpers/cart.php';
-			$cart = VirtueMartCart::getCart();
-			if(empty($cart)) return null;
-
-			$session = JFactory::getSession();
-			$awosess = $session->get('coupon', '', 'awocoupon');
-			if(empty($awosess) ) {
-			# removes error message from cart if coupon does not exist
-				$cart->couponCode = '';
-				$cart->setCartIntoSession();
-			}
-
+	public function plgVmgetPaymentCurrency( $virtuemart_paymentmethod_id, & $paymentCurrency ) {
+		// call once per session
+		static $is_called = false;
+		if ( $is_called ) {
+			return null;
 		}
-		
-		return null;
+		$is_called = true;
+
+		if ( ! class_exists( DiscountHelper::class ) ) {
+			return null;
+		}
+		if ( JFactory::getApplication()->isClient( 'administrator' ) ) {
+			return null;
+		}			
+
+		if ( ! class_exists( 'VirtueMartCart' ) ) {
+			require JPATH_ROOT . '/components/com_virtuemart/helpers/cart.php';
+		}
+		$cart = VirtueMartCart::getCart();
+		if ( empty( $cart ) ) {
+			return null;
+		}
+
+		$awosess = JFactory::getSession()->get( 'coupon', '', 'awocoupon' );
+		if ( empty( $awosess ) ) {
+		# removes error message from cart if coupon does not exist
+			$cart->couponCode = '';
+			$cart->setCartIntoSession();
+		}
 	}
 
 }
+

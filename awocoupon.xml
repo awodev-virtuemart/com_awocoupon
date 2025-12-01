@@ -1,65 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<install type="component" version="1.5.0" method="upgrade">
+<extension type="component" version="2.5" method="upgrade">
 	<name>AwoCoupon</name>
-	<creationDate>2022-04-08</creationDate>
+	<creationDate>2025-12-01</creationDate>
 	<author>Seyi Awofadeju</author>
 	<copyright>Copyright (C) Seyi Awofadeju - All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>dev@awofadeju.com</authorEmail>
 	<authorUrl>http://awodev.com</authorUrl>
-	<version>2.0.29</version>
+	<version>4.0.1</version>
 	<description>A coupon enhancement for Virtuemart</description>
-	
-	<installfile>install.awocoupon.php</installfile>
-	<uninstallfile>install.awocoupon.php</uninstallfile>
-	<install><sql><file driver="mysql" charset="utf8">install.mysql.sql</file></sql></install>
-	<uninstall><sql><file driver="mysql" charset="utf8">uninstall.mysql.sql</file></sql></uninstall>
+	<namespace path="src">AwoDev\Component\AwoCoupon</namespace>
+
+	<scriptfile>install.awocoupon.php</scriptfile>
+	<install>
+		<sql>
+			<file driver="mysqli" charset="utf8">helper/sql/install.mysql.sql</file>
+			<file driver="mysql" charset="utf8">helper/sql/install.mysql.sql</file>
+		</sql>
+	</install>
+	<uninstall>
+		<sql>
+			<file driver="mysqli" charset="utf8">helper/sql/uninstall.mysql.sql</file>
+			<file driver="mysql" charset="utf8">helper/sql/uninstall.mysql.sql</file>
+		</sql>
+	</uninstall>
 
 	<administration>
 		<menu img="../administrator/components/com_awocoupon/assets/images/awocoupon-small.png">COM_AWOCOUPON</menu>
 		<files folder="admin">
-			<folder>assets/</folder>
-			<folder>helpers/</folder>
-			<folder>models/</folder>
-			<folder>tables/</folder>
-			<folder>views/</folder>
-			<filename>awocoupon.php</filename>
-			<filename>awocoupon.config.php</filename>
-			<filename>controller.php</filename>
-			<filename>index.html</filename>
-			<filename>install.mysql.sql</filename>
-			<filename>toolbar.awocoupon.php</filename>
-			<filename>uninstall.mysql.sql</filename>
+			<folder>forms/</folder>
+			<folder>helper/</folder>
+			<folder>services/</folder>
+			<folder>src/</folder>
+			<folder>tmpl/</folder>
 		</files>
 		<languages folder="language/admin">
-			<language tag="bg-BG">bg-BG.com_awocoupon.ini</language>
-			<language tag="de-DE">de-DE.com_awocoupon.ini</language>
-			<language tag="en-GB">en-GB.com_awocoupon.ini</language>
-			<language tag="en-GB">en-GB.com_awocoupon.menu.ini</language>
-			<language tag="en-GB">en-GB.com_awocoupon.sys.ini</language>
-			<language tag="es-ES">es-ES.com_awocoupon.ini</language>
-			<language tag="fr-FR">fr-FR.com_awocoupon.ini</language>
-			<language tag="it-IT">it-IT.com_awocoupon.ini</language>
-			<language tag="nl-NL">nl-NL.com_awocoupon.ini</language>
-			<language tag="pl-PL">pl-PL.com_awocoupon.ini</language>
-			<language tag="sk-SK">sk-SK.com_awocoupon.ini</language>
-			<language tag="ru-RU">ru-RU.com_awocoupon.ini</language>
-			<language tag="ru-RU">ru-RU.com_awocoupon.menu.ini</language>
-			<language tag="ru-RU">ru-RU.com_awocoupon.sys.ini</language>
+			<language tag="bg-BG">bg-BG/com_awocoupon.ini</language>
+			<language tag="de-DE">de-DE/com_awocoupon.ini</language>
+			<language tag="en-GB">en-GB/com_awocoupon.ini</language>
+			<language tag="en-GB">en-GB/com_awocoupon.menu.ini</language>
+			<language tag="en-GB">en-GB/com_awocoupon.sys.ini</language>
+			<language tag="es-ES">es-ES/com_awocoupon.ini</language>
+			<language tag="fr-FR">fr-FR/com_awocoupon.ini</language>
+			<language tag="it-IT">it-IT/com_awocoupon.ini</language>
+			<language tag="nl-NL">nl-NL/com_awocoupon.ini</language>
+			<language tag="pl-PL">pl-PL/com_awocoupon.ini</language>
+			<language tag="sk-SK">sk-SK/com_awocoupon.ini</language>
+			<language tag="ru-RU">ru-RU/com_awocoupon.ini</language>
+			<language tag="ru-RU">ru-RU/com_awocoupon.menu.ini</language>
+			<language tag="ru-RU">ru-RU/com_awocoupon.sys.ini</language>
 
 		</languages>
 	</administration>
-
+	
 	<media folder="media" destination="com_awocoupon">
 		<folder>images/</folder>
-		<filename>index.html</filename>
 	</media>
 	
 	<files folder="site">
-		<folder>views/</folder>
-		<filename>awocoupon.php</filename>
-		<filename>controller.php</filename>
-		<filename>index.html</filename>
+		<folder>src/</folder>
+		<folder>tmpl/</folder>
 	</files>
 
 	<plugins>
@@ -72,4 +72,4 @@
 		<server type="extension" name="AwoCoupon Free Updates"><![CDATA[https://raw.githubusercontent.com/awodev-virtuemart/com_awocoupon/master/update.xml]]></server>
 	</updateservers>
 
-</install>
+</extension>

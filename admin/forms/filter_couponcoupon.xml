@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields name="filter">
+		<field
+			name="search"
+			type="text"
+			inputmode="search"
+			label="JSEARCH"
+			description=""
+			hint="JSEARCH_FILTER"
+		/>
+		<field
+			name="coupon_value_type"
+			type="list"
+			label=""
+			class="form-select"
+			multiple="false"
+			onchange="this.form.submit();"
+		>
+			<option value="">COM_AWOCOUPON_SELECT_PERCENT_AMOUNT</option>
+			<option value="percent">COM_AWOCOUPON_CP_PERCENTAGE</option>
+			<option value="total">COM_AWOCOUPON_CP_AMOUNT</option>
+		</field>
+		<field
+			name="discount_type"
+			type="list"
+			label=""
+			class="form-select"
+			multiple="false"
+			onchange="this.form.submit();"
+		>
+			<option value="">COM_AWOCOUPON_SELECT_DISCOUNT_TYPE</option>
+			<option value="overall">COM_AWOCOUPON_CP_OVERALL</option>
+			<option value="specific">COM_AWOCOUPON_CP_SPECIFIC</option>
+		</field>
+		<field
+			name="published"
+			type="list"
+			label=""
+			class="form-select"
+			multiple="false"
+			onchange="this.form.submit();"
+		>
+			<option value="">COM_AWOCOUPON_SELECT_STATUS</option>
+			<option value="1">COM_AWOCOUPON_CP_PUBLISHED</option>
+			<option value="-1">COM_AWOCOUPON_CP_UNPUBLISHED</option>
+		</field>
+	</fields>
+	<fields name="list">
+		<field
+			name="limit"
+			type="limitbox"
+			label=""
+			description="="
+			class="input-mini"
+			default="25"
+			onchange="this.form.submit();"
+		/>
+		<field name="fullordering" type="hidden" />
+	</fields>
+</form>
