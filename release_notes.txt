@@ -1,4 +1,7 @@
 
+4.0.2
+- Fix for virtuemart 4.6.4, token set couponcode
+
 4.0.1
 - This version requires Joomla 4.x and up.  For a lower version of Joomla use 2.0.29.
 

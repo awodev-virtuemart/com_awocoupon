@@ -596,6 +596,10 @@ class DiscountHelper {
 		$this->vmcartData['couponCode'] = $coupon_session['coupon_code'];
 		$this->vmcart->cartData['couponCode'] = $coupon_session['coupon_code'];
 		$this->vmcartData['couponDescr'] = '';
+
+		if ( version_compare( $this->vmversion, '4.6.4', '>=' ) ) {
+			vRequest::setVar( 'token', JSession::getFormToken() );
+		}
 		return;
 
 		//$salesPriceCoupon = 0;
