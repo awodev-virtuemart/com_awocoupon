@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="component" version="2.5" method="upgrade">
 	<name>AwoCoupon</name>
-	<creationDate>2025-12-01</creationDate>
+	<creationDate>2026-01-30</creationDate>
 	<author>Seyi Awofadeju</author>
 	<copyright>Copyright (C) Seyi Awofadeju - All rights reserved.</copyright>
 	<license>http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL</license>
 	<authorEmail>dev@awofadeju.com</authorEmail>
 	<authorUrl>http://awodev.com</authorUrl>
-	<version>4.0.1</version>
+	<version>4.0.2</version>
 	<description>A coupon enhancement for Virtuemart</description>
 	<namespace path="src">AwoDev\Component\AwoCoupon</namespace>
 
